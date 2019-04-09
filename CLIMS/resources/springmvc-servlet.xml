@@ -12,7 +12,7 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
         
-   <context:component-scan base-package="cn.appsys.controller"/>
+   <context:component-scan base-package="cn.clims.controller"/>
    
    <mvc:annotation-driven>
 	   	<mvc:message-converters>
@@ -58,7 +58,7 @@
         <property name="viewResolvers">
             <list>
                 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-				   <property name="prefix" value="/WEB-INF/jsp/"/>
+				   <property name="prefix" value="/WEB-INF/pages/"/>
 				   <property name="suffix" value=".jsp"/>
 			   </bean>
             </list>
