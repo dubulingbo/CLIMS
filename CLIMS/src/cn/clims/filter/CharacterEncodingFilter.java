@@ -40,7 +40,7 @@ public class CharacterEncodingFilter implements Filter{
         resp.addHeader( "Cache-Control", "no-store" );//请求和响应的信息都不应该被存储在对方的磁盘系统中；    
         resp.addHeader( "Cache-Control", "must-revalidate" );//于客户机的每次请求，代理服务器必须向服务器验证缓存是否过时；
         
-		logger.info("=="+req.getRequestURI()+"==");
+//		logger.info("=="+req.getRequestURI()+"==");
 		//完成功能后记得 放行
 		chain.doFilter(request, response);
 	}

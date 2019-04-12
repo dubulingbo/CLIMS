@@ -55,31 +55,51 @@
  		<property name="dataSource" ref="dataSource"/>
  		<property name="configLocation" value="classpath:mybatis-config.xml"/>
  	</bean>
+ 	
+ 	<!-- mapper接口所在的包名，spring会自动查找其下的Mapper -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
     	<property name="basePackage" value="cn.clims.dao"/>
     </bean>
     
+    <!-- 事务管理 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!-- AOP事务管理 -->
+	<aop:aspectj-autoproxy/>
+	<aop:config proxy-target-class="true">
+		<aop:pointcut expression="execution(* *cn.clims.service..*(..))" id="transService"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="transService"/>
+	</aop:config>
+	
+	<!-- txAdvice -->      
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="cl*" propagation="REQUIRED" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	
     
     <!--redis 配置 开始-->
-	<!-- 
 	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
 		<property  name="maxActive"  value="${redis.maxActive}" />
 		<property  name="maxIdle"   value="${redis.maxIdle}" />
 		<property  name="maxWait"  value="${redis.maxWait}" />
 		<property  name="testOnBorrow"  value="true" />
 	</bean>
-	Config poolConfig, String host, int port, int timeout, String password, int database
+	<!-- Config poolConfig, String host, int port, int timeout, String password, int database -->
 	<bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy" >
 		<constructor-arg ref="jedisPoolConfig"/>
 		<constructor-arg value="${redis.host}"/>
 		<constructor-arg value="${redis.port}"/>
 		<constructor-arg value="${redis.timeout}"/>
-		<constructor-arg value="${redis.pass}"/> 密码
-		<constructor-arg value="${redis.default.db}"/>默认使用第零个数据库db0
+		<constructor-arg value="${redis.pass}"/> <!-- 密码 -->
+		<constructor-arg value="${redis.default.db}"/><!-- 默认使用第零个数据库db0 -->
 	</bean>
 	<bean id="redisAPI" class="cn.clims.tools.RedisAPI">
 		<property name="jedisPool" ref="jedisPool"/>
-	</bean> -->
+	</bean> 
     
     
 </beans>

@@ -1,6 +1,6 @@
 package cn.clims.pojo;
 
-public class Role {
+public class Role extends Base{
 	private Integer id;
 	private String roleCode;
 	private String roleName;

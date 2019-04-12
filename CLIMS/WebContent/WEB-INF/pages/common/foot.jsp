@@ -1,13 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
-       <footer>
-			<p class="pull-left">&copy; <span>DubLBo 2019</span>
-			<p class="pull-right">Powered by: <b>dubulingbo</b></p>
+			<!-- content ends -->
+	    	</div><!--/#content.span10-->
+		</div><!--/fluid-row-->	
+    	
+    	
+    	<!-- footer starts -->
+    	<hr>
+		<footer>
+			<p class="pull-left"><span>CLIMS开发团队&nbsp;&nbsp;&copy;2019&nbsp;&nbsp;DubLBo&emsp;&emsp;版权所有</span></p>
+			<p class="pull-right">Contact us: <b>&nbsp;dubulingbo@163.com</b></p>
 		</footer>
-		
+		<!-- footer ends -->
 	</div><!--/.fluid-container-->
-
+    
 	<!-- external javascript
 	================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
@@ -81,6 +88,4 @@
 	<script src="${pageContext.request.contextPath }/statics/js/jquery.history.js"></script>
 	<!-- application script for Charisma demo -->
 	<script src="${pageContext.request.contextPath }/statics/js/charisma.js"></script>
-	
-	
 </html>

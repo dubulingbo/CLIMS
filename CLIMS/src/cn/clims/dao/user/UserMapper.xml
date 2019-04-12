@@ -17,6 +17,7 @@
 		</trim>
 	</select>
 	
+	
 	<update id="modifyUser" parameterType="user">
 		update clims_user 
 			<set>
@@ -27,7 +28,6 @@
 				<if test="userRole != null">userRole = #{userRole},</if>
 				<if test="email != null and email != ''">email = #{email},</if>
 				<if test="phone != null and phone != ''">phone = #{phone},</if>
-				<if test="dept != null and phone != ''">phone = #{phone},</if>
 				<if test="createdBy != null">createdBy = #{createdBy},</if>
 				<if test="creationDate != null">creationDate = #{creationDate},</if>
 				<if test="modifyBy != null">modifyBy = #{modifyBy},</if>
@@ -35,4 +35,36 @@
 			</set>
 			where id = #{id}
 	</update>
+	
+	
+	<select id="getUserCount" resultType="int" parameterType="user">
+		select count(1) from clims_user
+			<trim prefix="where" prefixOverrides="and | or">
+				<if test="userName != null">
+					and userName like CONCAT('%',#{userName},'%')
+				</if>
+				<if test="userCode != null">
+					and userCode like CONCAT('%',#{userCode},'%')
+				</if>
+				<if test="userRole != null">
+					and userRole = #{userRole}
+				</if>
+			</trim>
+	</select>
+	
+	<select id="getUserList" resultType="user" parameterType="user">
+		select * from clims_user
+			<trim prefix="where" prefixOverrides="and | or">
+				<if test="userName != null">
+					and userName like CONCAT('%',#{userName},'%')
+				</if>
+				<if test="userCode != null">
+					and userCode like CONCAT('%',#{userCode},'%')
+				</if>
+				<if test="userRole != null">
+					and userRole = #{userRole}
+				</if>
+			</trim>
+		order by creationDate DESC limit #{startPageNo},#{pageSize}
+	</select>
 </mapper>

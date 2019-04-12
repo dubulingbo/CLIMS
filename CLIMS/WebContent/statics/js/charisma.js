@@ -32,7 +32,7 @@ $(document).ready(function(){
 			user.password = oldpwd;
 			user.password2 = newpwd;
 			$.ajax({
-				url: '/backend/modifyPwd.html',
+				url: 'backend/modifyPwd.html',
 				type: 'POST',
 				data:{userJson:JSON.stringify(user)},
 				dataType: 'html',
@@ -80,26 +80,27 @@ $(document).ready(function(){
 		</li>
 		*/
 		//配置main menu
-		result= result + '<li class=\"nav-header hidden-tablet\" onclick=\"$(\'#test'+i+'\').toggle(500);\" style=\"cursor:pointer;\">'+json[i].mainMenu.functionName+'</li>';                                                     
+//		result= result + '<li class=\"nav-header hidden-tablet\" onclick=\"$(\'#test'+i+'\').toggle(500);\" style=\"cursor:pointer;\">'+json[i].mainMenu.functionName+'</li>';                                                     
 		
 		//配置subMenu
-		result = result + '<li><ul class=\"nav nav-tabs nav-stacked\" id=\"test'+i+'\">';
-		
-		for(var j=0;j<json[i].subMenus.length;j++){
-			var pic;
-			switch(j){
-				case 0: pic = "icon-home";break;
-				case 1: pic = "icon-eye-open";break;
-				case 2: pic = "icon-edit";break;
-				case 3: pic = "icon-list-alt";break;
-				case 4: pic = "icon-font";break;
-				case 5: pic = "icon-picture";break;
-				default:pic = "icon-picture";
-			}
-			result = result + '<li><a class=\"ajax-link\" href=\"'+json[i].subMenus[j].funcUrl+'\"><i class=\"'+pic+'\"></i><span class=\"hidden-tablet\">'+json[i].subMenus[j].functionName+'</span></a></li>';                   
-			
+//		result = result + '<li><ul class=\"nav nav-tabs nav-stacked\" id=\"test'+i+'\">';
+		var pic;
+		switch(i){
+			case 0: pic = "icon-home";break;
+			case 1: pic = "icon-eye-open";break;
+			case 2: pic = "icon-edit";break;
+			case 3: pic = "icon-list-alt";break;
+			case 4: pic = "icon-font";break;
+			case 5: pic = "icon-picture";break;
+			default:pic = "icon-picture";
 		}
-		result = result + '</ul></li>';
+		result = result + '<li><a class=\"ajax-link\" href=\"'+json[i].functionUrl+'\"><i class=\"'+pic+'\"></i><span class=\"hidden-tablet\"> '+json[i].functionName+'</span></a></li>';                   
+			
+//		result = result + '</ul></li>';
+	}
+	
+	for(var i=0;i<25-json.length;i++){
+		result = result + '<br>';
 	}
 	$("#menus").append(result);
 	/** menuList end */

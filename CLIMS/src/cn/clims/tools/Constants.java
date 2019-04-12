@@ -7,7 +7,7 @@ package cn.clims.tools;
  */
 public class Constants {
 	public final static String SYS_MESSAGE = "message";
-	public final static int pageSize = 5;
+	public final static int PAGE_SIZE = 5;
 	public final static String FILEUPLOAD_ERROR_1 = " * 设备信息不完整！";
 	public final static String FILEUPLOAD_ERROR_2 = " * 上传失败！";
 	public final static String FILEUPLOAD_ERROR_3 = " * 上传文件格式不正确！";

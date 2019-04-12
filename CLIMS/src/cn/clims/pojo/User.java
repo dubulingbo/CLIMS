@@ -2,7 +2,7 @@ package cn.clims.pojo;
 
 import java.util.Date;
 
-public class User{
+public class User extends Base{
 	public Integer id;
 	private String userCode;
 	private String userPassword;

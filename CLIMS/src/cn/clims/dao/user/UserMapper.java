@@ -1,5 +1,7 @@
 package cn.clims.dao.user;
 
+import java.util.List;
+
 import cn.clims.pojo.User;
 
 public interface UserMapper {
@@ -26,4 +28,13 @@ public interface UserMapper {
 	 * @throws Exception
 	 */
 	public int modifyUser(User user)throws Exception;
+	
+	/**
+	 * 获取用户列表（用于分页显示）
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> getUserList(User user)throws Exception;
+	
+	public int getUserCount(User user)throws Exception;
 }

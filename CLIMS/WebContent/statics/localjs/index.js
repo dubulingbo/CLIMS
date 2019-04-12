@@ -21,14 +21,16 @@ $("#loginBtn").click(function(){
     		dataType:'html',
     		timeout:1000,
     		error:function(){
-    			alert("2333");
     			$("#formtip").css("color","red");
     	    	$("#formtip").html("登录失败！请重试。");
     		},
     		success:function(result){
-    			alert(result);
-    			if(result != "" && result == "success"){//若登录成功，跳转到"/main.html"
-    				window.location.href='main.html';
+    			if(result == "success1"){//若登录成功，跳转到"backend/admin/main.html"
+    				window.location.href='backend/admin/main.html';
+    			}else if(result =="success2"){//若登录成功，跳转到"backend/manage/main.html"
+    				window.location.href='backend/manage/main.html';
+    			}else if(result =="success2"){//若登录成功，跳转到"backend/normal/main.html"
+    				window.location.href='backend/normal/main.html';
     			}else if(result == "failed"){
     				$("#formtip").css("color","red");
         	    	$("#formtip").html("登录失败！请重试。");
@@ -43,6 +45,9 @@ $("#loginBtn").click(function(){
     			}else if("nodata" == result){
     				$("#formtip").css("color","red");
         	    	$("#formtip").html("对不起，没有任何数据需要处理！请重试。");
+    			}else{
+    				$("#formtip").css("color","red");
+        	    	$("#formtip").html("登录失败！请重试。");
     			}
     		}
     		
