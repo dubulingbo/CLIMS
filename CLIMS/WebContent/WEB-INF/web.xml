@@ -3,10 +3,28 @@
 		 xmlns="http://java.sun.com/xml/ns/javaee" 
 		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 		 					 http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-  <display-name>CLIMS</display-name>
-  <welcome-file-list>
-    <welcome-file>/WEB-INF/pages/index.jsp</welcome-file>
-  </welcome-file-list>
+	<display-name>CLIMS</display-name>
+	<welcome-file-list>
+		<welcome-file>/WEB-INF/pages/index.jsp</welcome-file>
+	</welcome-file-list>
+  
+  
+  
+  	<!-- log4j配置 -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>CLIMS.root</param-value>
+	</context-param>
+	<!-- spring加载log4j的监听 -->
+	<listener>
+		<description>log4j配置加载器</description>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+  
   
   <!-- Spring配置 -->
 	<!-- 当系统启动的时候，spring需要进行一些资源加载或者配置，都需要使用此监听去做 -->
@@ -72,22 +90,6 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
-	
-	<!-- log4j配置 -->
-	<context-param>
-		<param-name>log4jConfigLocation</param-name>
-		<param-value>classpath:log4j.properties</param-value>
-	</context-param>
-	<context-param>
-		<param-name>webAppRootKey</param-name>
-		<param-value>CLIMS.root</param-value>
-	</context-param>
-	
-	
-	<!-- spring加载log4j的监听 -->
-	<listener>
-		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-	</listener>
 	
 	
 </web-app>

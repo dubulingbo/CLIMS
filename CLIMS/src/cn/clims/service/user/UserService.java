@@ -11,5 +11,8 @@ public interface UserService {
 	public int modifyUser(User user)throws Exception;
 	public List<User> getUserList(User user)throws Exception;
 	public int getUserCount(User user)throws Exception;
+	public int addUser(User addUser)throws Exception;
+	public User getUserById(User user) throws Exception;
+	public int deleteUser(User delUser)throws Exception;
 	
 }

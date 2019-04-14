@@ -3,9 +3,10 @@ package cn.clims.pojo;
 import java.util.Date;
 
 public class User extends Base{
-	public Integer id;
+
 	private String userCode;
 	private String userPassword;
+	private String userPassword2;  //新密码，用于修改密码
 	private String userName;
 	private Integer gender;
 	private Integer userRole;
@@ -16,14 +17,10 @@ public class User extends Base{
 	private Date creationDate;
 	private Integer modifyBy;
 	private Date modifyDate;
+	private String idCard;
+	private String number; //学号
 	
 	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
 	public String getUserCode() {
 		return userCode;
 	}
@@ -95,6 +92,24 @@ public class User extends Base{
 	}
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;
+	}
+	public String getUserPassword2() {
+		return userPassword2;
+	}
+	public void setUserPassword2(String userPassword2) {
+		this.userPassword2 = userPassword2;
+	}
+	public String getIdCard() {
+		return idCard;
+	}
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
+	}
+	public String getNumber() {
+		return number;
+	}
+	public void setNumber(String number) {
+		this.number = number;
 	}
 	
 	

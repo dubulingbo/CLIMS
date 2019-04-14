@@ -44,4 +44,22 @@ public class UserServiceImpl implements UserService {
 		return userMapper.getUserCount(user);
 	}
 
+	@Override
+	public int addUser(User addUser) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.addUser(addUser);
+	}
+
+	@Override
+	public User getUserById(User user) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.getUserById(user);
+	}
+
+	@Override
+	public int deleteUser(User delUser)throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.deleteUser(delUser);
+	}
+
 }

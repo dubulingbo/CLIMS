@@ -14,7 +14,7 @@ public class Constants {
 	public final static String FILEUPLOAD_ERROR_4 = " * 上传文件过大！";
 	
 	//当前登录用户session key
-	public static final String SESSION_USER = "userSession";
+	public static final String SESSION_USER = "user";
 	//当前登录用户的基础业务数据(菜单列表)
 	public static final String SESSION_BASE_MODEL = "baseModel";
 }

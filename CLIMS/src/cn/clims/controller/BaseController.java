@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,10 @@ public class BaseController {
 	
 	//抽取当前用户
 	private User currentUser;
+	
+	//用于存放页面主菜单和当前用户的登录信息
+	Map<String,Object> baseModel = new HashMap<>(); 
+	
 	
 	public User getCurrentUser(){
 		if(this.currentUser == null){
@@ -81,43 +86,6 @@ public class BaseController {
 	
 	
 	
-	public boolean pageInit(HttpSession session,Map<String,Object> model){
-		User user = getCurrentUser();
-		//function list
-		List<Function> mList = null;
-		
-		if(user != null){
-			
-			model.put("user", user);
-			
-			/**
-			 * key:menuList+roleId --eg:"menuList2"
-			 */
-			//redis里有没有数据
-			if(redisAPI.exists("menuList"+user.getUserRole())){//redis有数据,直接从redis缓存数据库里取出功能列表
-				String redisMenuListKeyString = redisAPI.get("menuList"+user.getUserRole());
-				logger.debug("menuList from redis: "+redisMenuListKeyString);
-				if(redisMenuListKeyString !=null && redisMenuListKeyString != ""){
-					model.put("mList", redisMenuListKeyString);
-				}else{
-					return false;
-				}
-			} else { //没有数据
-				//根据当前用户获取菜单列表mList
-				mList = getFuncByCurrentUser(user.getUserRole());
-				//转化为json
-				if(mList != null){
-					String jsonString = JSONArray.fromObject(mList).toString();
-					logger.debug("jsonString : "+jsonString);
-					model.put("mList", jsonString);
-					redisAPI.set("menuList"+user.getUserRole(),60*60 ,jsonString);
-				}
-			}
-			session.setAttribute(Constants.SESSION_BASE_MODEL, model);
-			return true;
-		}
-		return false;
-	}
 	
 	
 	/**
@@ -134,5 +102,54 @@ public class BaseController {
 			e.printStackTrace();
 		}
 		return menuList;
+	}
+
+	
+	
+	public Map<String, Object> getBaseModel() {
+		return baseModel;
+	}
+	
+	
+	/**
+	 * 对页面功能菜单和当前用户信息的存储
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	public void setBaseModel(Map<String, Object> baseModel) {
+		User user = getCurrentUser();
+		//function list
+		List<Function> mList = null;
+		
+		if(user != null){
+			
+			baseModel.put(Constants.SESSION_USER, user);
+			
+			/**
+			 * key:menuList+roleId --eg:"menuList2"
+			 */
+			//redis里有没有数据
+			if(redisAPI.exists("menuList"+user.getUserRole())){//redis有数据,直接从redis缓存数据库里取出功能列表
+				String redisMenuListKeyString = redisAPI.get("menuList"+user.getUserRole());
+				logger.debug("menuList from redis: "+redisMenuListKeyString);
+				if(redisMenuListKeyString !=null && redisMenuListKeyString != ""){
+					baseModel.put("mList", redisMenuListKeyString);
+				}else{
+					logger.debug("redis缓存中功能列表数据已被清空！");
+				}
+			} else { //没有数据
+				//根据当前用户获取菜单列表mList
+				mList = getFuncByCurrentUser(user.getUserRole());
+				//转化为json
+				if(mList != null){
+					String jsonString = JSONArray.fromObject(mList).toString();
+					//logger.debug("jsonString : "+jsonString);
+					baseModel.put("mList", jsonString);
+					redisAPI.set("menuList"+user.getUserRole(),2*60*60 ,jsonString);  //设置缓存时间为2个小时
+				}
+			}
+		}
+		this.baseModel = baseModel;
 	}
 }

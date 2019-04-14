@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -86,7 +87,7 @@
 				
 				<div class="modal hide fade" id="myModal">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">×</button>
+						<button type="button" class="close modifyPwdCancel" data-dismiss="modal">×</button>
 						<h3>修改密码</h3>
 					</div>
 					<div class="modal-body">
@@ -98,7 +99,7 @@
 						<p id="modifypwdtip"></p>
 					</div>
 					<div class="modal-footer">
-						<a href="#" class="btn" data-dismiss="modal">取消</a>
+						<a href="#" class="btn modifyPwdCancel" data-dismiss="modal">取消</a>
 						<a href="#" id="modifySavePassword" class="btn btn-primary">修改</a>
 					</div>
 				</div>

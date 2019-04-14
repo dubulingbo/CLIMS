@@ -1,9 +1,5 @@
 package cn.clims.controller;
 
-
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
@@ -13,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 import cn.clims.pojo.User;
 import cn.clims.service.user.UserService;
 import cn.clims.tools.Constants;
@@ -65,9 +60,11 @@ public class LoginController extends BaseController{
 	@RequestMapping("/logout.html")
 	public String logout(HttpSession session){
 		session.removeAttribute(Constants.SESSION_USER);
+		session.removeAttribute(Constants.SESSION_BASE_MODEL);
+		
 		session.invalidate();
 		this.setCurrentUser(null);
-		return "index";
+		return "redirect:/";
 		
 	}
 	
@@ -80,12 +77,12 @@ public class LoginController extends BaseController{
 		return "index";
 	}
 	
-	@RequestMapping(value="/test.html")
-	public ModelAndView test(HttpSession session){
-		Map<String,Object> model = new HashMap<>();
-		if(pageInit(session,model))
-			return new ModelAndView("test",model);
-		else 
-			return new ModelAndView("redirect:/index.html");
-	}
+//	@RequestMapping(value="/test.html")
+//	public ModelAndView test(HttpSession session){
+//		Map<String,Object> model = new HashMap<>();
+//		if(pageInit(session,model))
+//			return new ModelAndView("test",model);
+//		else 
+//			return new ModelAndView("redirect:/index.html");
+//	}
 }

@@ -1,5 +1,13 @@
 $(document).ready(function(){
-/**modifypassword add by bdqn_hl 2014-2-28 start*/
+/**modifypassword add by DubLBo 2019-4-12 start*/
+	//取消之后需要做一些清空操作
+	$('.modifyPwdCancel').click(function(e){
+		$("#modifypwdtip").html('');
+		$('#oldpassword').val('');
+		$('#newpassword').val('');
+		$('#aginpassword').val('');
+	});
+	
 	$("#modifySavePassword").click(function(){
 		var tip = $("#modifypwdtip");
 		tip.html("");
@@ -26,13 +34,17 @@ $(document).ready(function(){
 			tip.css("color","red");
 			tip.html("对不起，您两次输入的密码不一致，请重新输入，谢谢。");
 			$("#aginpassword").focus();
+		}else if(newpwd == oldpwd){
+			tip.css("color","red");
+			tip.html("新密码不能与原密码一样！");
+			$("#newloginpwd").focus();
 		}else{
 			//userJson
 			user = new Object();
-			user.password = oldpwd;
-			user.password2 = newpwd;
+			user.userPassword = oldpwd;
+			user.userPassword2 = newpwd;
 			$.ajax({
-				url: 'backend/modifyPwd.html',
+				url: 'modifyPwd.html',
 				type: 'POST',
 				data:{userJson:JSON.stringify(user)},
 				dataType: 'html',
@@ -55,7 +67,11 @@ $(document).ready(function(){
 						tip.html("对不起，没有任何数据需要处理！请重试。");
 					}
 				}
-				});
+			});
+			//本次结束后清空数据
+			$('#oldpassword').val('');
+			$('#newpassword').val('');
+			$('#aginpassword').val('');
 		}
 	});
 /**modifypassword add by bdqn_hl 2014-2-28 end*/

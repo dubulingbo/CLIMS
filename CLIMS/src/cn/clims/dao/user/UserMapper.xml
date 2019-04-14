@@ -14,6 +14,9 @@
 			<if test="userCode !=null and userCode !=''">
 				and userCode = #{userCode}
 			</if>
+			<if test="id !=null">
+				and id != #{id}
+			</if>
 		</trim>
 	</select>
 	
@@ -26,8 +29,11 @@
 				<if test="userName != null and userName != ''">userName = #{userName},</if>
 				<if test="gender != null">gender = #{gender},</if>
 				<if test="userRole != null">userRole = #{userRole},</if>
+				<if test="number != null and number != ''">number = #{number},</if>
+				<if test="idCard != null and idCard != ''">idCard = #{idCard},</if>
 				<if test="email != null and email != ''">email = #{email},</if>
 				<if test="phone != null and phone != ''">phone = #{phone},</if>
+				<if test="dept != null and dept != ''">dept = #{dept},</if>
 				<if test="createdBy != null">createdBy = #{createdBy},</if>
 				<if test="creationDate != null">creationDate = #{creationDate},</if>
 				<if test="modifyBy != null">modifyBy = #{modifyBy},</if>
@@ -67,4 +73,25 @@
 			</trim>
 		order by creationDate DESC limit #{startPageNo},#{pageSize}
 	</select>
+	
+	
+	<insert id="addUser" parameterType="user">
+		insert into 
+			clims_user(userCode,userPassword,userName,
+					   gender,userRole,dept,
+					   createdBy,creationDate)
+			values(#{userCode},#{userPassword},#{userName},
+				   #{gender},#{userRole},#{dept},
+				   #{createdBy},#{creationDate})
+	</insert>
+	
+	<select id="getUserById" parameterType="user" resultType="user">
+		select * from clims_user where id = #{id}
+	</select>
+	
+	
+	<delete id="deleteUser" parameterType="user">
+		delete from clims_user where id = #{id}
+	</delete>
 </mapper>
+
