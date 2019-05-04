@@ -9,7 +9,7 @@ import net.sf.json.processors.JsonValueProcessor;
 
 /**
  * JsonDateValueProcessor
- * JSON 日期格式处理（java转化为JSON）
+ * JSON 日期格式处理(java转化为JSON)
  * @author DubLBo 
  * @date 2019-4-13
  */

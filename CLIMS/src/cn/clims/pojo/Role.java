@@ -1,5 +1,6 @@
 package cn.clims.pojo;
 
+@SuppressWarnings("serial")
 public class Role extends Base{
 	private String roleCode;
 	private String roleName;

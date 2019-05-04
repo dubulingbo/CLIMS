@@ -15,8 +15,26 @@ public class FunctionServiceImpl implements FunctionService {
 	private FunctionMapper functionMapper;
 	
 	@Override
-	public List<Function> getFunctionListByRoleId(Integer roleId) throws Exception {
-		return functionMapper.getFunctionListByRoleId(roleId);
+	public List<Function> getSubFunctionList(Function function) throws Exception {
+		return functionMapper.getSubFunctionList(function);
+	}
+
+	@Override
+	public List<Function> getFunctionListByRoleId2() throws Exception {
+		// TODO Auto-generated method stub
+		return functionMapper.getFunctionListByRoleId2();
+	}
+
+	@Override
+	public List<Function> getAllHrefByRoleId(Integer roleId) throws Exception {
+		// TODO Auto-generated method stub
+		return functionMapper.getAllHrefByRoleId(roleId);
+	}
+
+	@Override
+	public List<Function> getMainFunctionList(Integer userRole) throws Exception {
+		// TODO Auto-generated method stub
+		return functionMapper.getMainFunctionList(userRole);
 	}
 
 }

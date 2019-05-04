@@ -4,19 +4,19 @@ $("#loginBtn").click(function(){
     user.userPassword = $.trim($("#userPassword").val());
     
     if(user.userCode == "" || user.userCode == null){
-    	$("#userCode").focus;
+    	$("#userCode").focus();
     	$("#formtip").css("color","red");
     	$("#formtip").html("对不起，登录账号不能为空。");
     }else if(user.userPassword == "" || user.userPassword == null){
-    	$("#userPassword").focus;
+    	$("#userPassword").focus();
     	$("#formtip").css("color","red");
     	$("#formtip").html("对不起，登录密码不能为空。");
     }else{
     	$("#formtip").html("");
-    	
+//    	alert(JSON.stringify(user));
     	$.ajax({
     		type:'POST',
-    		url:'login.html',
+    		url:'/login.html',
     		data:{user:JSON.stringify(user)},
     		dataType:'html',
     		timeout:1000,
@@ -25,15 +25,11 @@ $("#loginBtn").click(function(){
     	    	$("#formtip").html("登录失败！请重试。");
     		},
     		success:function(result){
-    			if(result == "success1"){//若登录成功，跳转到"backend/admin/main.html"
-    				window.location.href='backend/admin/main.html';
-    			}else if(result =="success2"){//若登录成功，跳转到"backend/manage/main.html"
-    				window.location.href='backend/manage/main.html';
-    			}else if(result =="success2"){//若登录成功，跳转到"backend/normal/main.html"
-    				window.location.href='backend/normal/main.html';
+    			if(result == "success"){//若登录成功，跳转到"main.html"
+    				window.location.href='/main.html';
     			}else if(result == "failed"){
     				$("#formtip").css("color","red");
-        	    	$("#formtip").html("登录失败！请重试。");
+        	    	$("#formtip").html("登录失败，系统错误！");
         	    	$("#userCode").val('');
         	    	$("#userPassword").val('');
     			}else if(result == "nologincode"){
@@ -47,7 +43,7 @@ $("#loginBtn").click(function(){
         	    	$("#formtip").html("对不起，没有任何数据需要处理！请重试。");
     			}else{
     				$("#formtip").css("color","red");
-        	    	$("#formtip").html("登录失败！请重试。");
+        	    	$("#formtip").html("登录失败，未知原因!");
     			}
     		}
     		

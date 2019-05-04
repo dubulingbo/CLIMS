@@ -4,8 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.clims.dao.user.UserMapper">
 	<select id="getLoginUser" resultType="user" parameterType="user">
-		select * from clims_user
-			where userCode=#{userCode} and userPassword=#{userPassword} 
+		select u.*,(select roleName from clims_role where id = u.userRole) as userRoleName
+		from clims_user u
+		where u.userCode=#{userCode} and u.userPassword=#{userPassword}
 	</select>
 	
 	<select id="userCodeIsExist" parameterType="user" resultType="int">
@@ -59,19 +60,20 @@
 	</select>
 	
 	<select id="getUserList" resultType="user" parameterType="user">
-		select * from clims_user
+		select u.*,(select roleName from clims_role where id = u.userRole) as userRoleName
+		from clims_user u
 			<trim prefix="where" prefixOverrides="and | or">
 				<if test="userName != null">
-					and userName like CONCAT('%',#{userName},'%')
+					and u.userName like CONCAT('%',#{userName},'%')
 				</if>
 				<if test="userCode != null">
-					and userCode like CONCAT('%',#{userCode},'%')
+					and u.userCode like CONCAT('%',#{userCode},'%')
 				</if>
 				<if test="userRole != null">
-					and userRole = #{userRole}
+					and u.userRole = #{userRole}
 				</if>
 			</trim>
-		order by creationDate DESC limit #{startPageNo},#{pageSize}
+		order by u.creationDate DESC limit #{startPageNo},#{pageSize}
 	</select>
 	
 	
@@ -86,12 +88,15 @@
 	</insert>
 	
 	<select id="getUserById" parameterType="user" resultType="user">
-		select * from clims_user where id = #{id}
+		select u.*,(select roleName from clims_role where id = u.userRole) as userRoleName
+		from clims_user u 
+		where u.id = #{id}
 	</select>
 	
 	
 	<delete id="deleteUser" parameterType="user">
 		delete from clims_user where id = #{id}
 	</delete>
+
 </mapper>
 

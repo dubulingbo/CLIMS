@@ -7,7 +7,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>实验室仪器设备管理</title>
+	<title>实验室仪器管理</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- The styles -->
@@ -53,7 +53,7 @@
 	<![endif]-->
 
 	<!-- The fav icon -->
-	<link rel="shortcut icon" href="${pageContext.request.contextPath }/statics/img/favicon.ico">
+	<link rel="shortcut icon" href="${pageContext.request.contextPath }/statics/img/logo.ico">
 	<script type="text/javascript"> var tt = '${mList}';</script>
 </head>
 
@@ -67,21 +67,16 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
-				<a class="brand" href="main.html"> <img alt="Charisma Logo" src="${pageContext.request.contextPath }/statics/img/logo20.png" /> <span>设备管理系统</span></a>
+				<a class="brand" href="/main.html"> <img alt="CLIMS Logo" src="${pageContext.request.contextPath }/statics/img/logo001.jpg" /> <span>仪器管理系统</span></a>
 				
 				<!-- theme selector starts -->
 				<div class="btn-group pull-right theme-container" >
 					<ul class="nav">
-						<li><a>你好，${user.userCode}</a></li>
-						<li><a>角色：
-							<c:if test="${user.userRole==1}">系统管理员</c:if>
-							<c:if test="${user.userRole==2}">院系管理员</c:if>
-							<c:if test="${user.userRole==3}">普通用户</c:if>
-						</a></li>
-						<li><a href="main.html">首页</a></li>
-						<!-- <li><a href="modify.html">修改个人信息</a></li> -->
+						<li><a>你好，${user.userName}</a></li>
+						<li><a>角色：${user.userRoleName }</a></li>
+						<li><a href="/main.html">首页</a></li>
 						<li><a href="javascript:void();" class="btn-setting modifypwd">修改密码</a></li>
-						<li><a href="${pageContext.request.contextPath }/logout.html">注销</a></li>
+						<li><a href="/logout.html">注销</a></li>
 					</ul>
 				</div>
 				
@@ -116,14 +111,12 @@
 				<div class="well nav-collapse sidebar-nav">
 					<ul class="nav nav-tabs nav-stacked main-menu">
 						<li class="nav-header hidden-tablet">
-							<c:if test="${user.userRole==1}">系统管理员菜单</c:if>
-							<c:if test="${user.userRole==2}">院系管理员菜单</c:if>
-							<c:if test="${user.userRole==3}">普通用户菜单</c:if>
+							<b>${user.userRoleName } 菜单</b>
 						</li>
 						<!-- menu content -->
 						<li><ul class="nav nav-tabs nav-stacked" id="menus"></ul></li>
 					</ul>
-					<label id="for-is-ajax" class="hidden-tablet" for="is-ajax"> Menu end</label>
+					<label id="for-is-ajax" class="hidden-tablet" for="is-ajax"><b> Menu end</b></label>
 				</div><!--/.well -->
 			</div><!--/span-->
 			<!-- left menu ends -->

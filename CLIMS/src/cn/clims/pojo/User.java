@@ -2,7 +2,8 @@ package cn.clims.pojo;
 
 import java.util.Date;
 
-public class User extends Base{
+@SuppressWarnings("serial")
+public class User extends Base {
 
 	private String userCode;
 	private String userPassword;
@@ -19,6 +20,10 @@ public class User extends Base{
 	private Date modifyDate;
 	private String idCard;
 	private String number; //学号
+	private Integer isPerfect;
+	
+	
+	private String userRoleName;
 	
 	
 	public String getUserCode() {
@@ -110,6 +115,18 @@ public class User extends Base{
 	}
 	public void setNumber(String number) {
 		this.number = number;
+	}
+	public Integer getIsPerfect() {
+		return isPerfect;
+	}
+	public void setIsPerfect(Integer isPerfect) {
+		this.isPerfect = isPerfect;
+	}
+	public String getUserRoleName() {
+		return userRoleName;
+	}
+	public void setUserRoleName(String userRoleName) {
+		this.userRoleName = userRoleName;
 	}
 	
 	

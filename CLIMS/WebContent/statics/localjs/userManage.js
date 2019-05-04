@@ -178,15 +178,7 @@ $('.viewUser').click(function(e){
 				$('#v_number').text(result.number);
 				$('#v_idCard').text(result.idCard);
 				$('#v_dept').text(result.dept);
-				if(result.userRole == "1"){
-					$('#v_userRole').text('系统管理员');
-				}else if(result.userRole == "2"){
-					$('#v_userRole').text('院系管理员');
-				}else if(result.userRole == "3"){
-					$('#v_userRole').text('普通使用者');
-				}else{
-					alert('此用户角色有误！');
-				}
+				$('#v_userRole').text(result.userRoleName);
 				$('#v_creationDate').text(result.creationDate);
 				
 				e.preventDefault(); //屏蔽默认样式

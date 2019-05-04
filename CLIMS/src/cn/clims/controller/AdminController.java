@@ -1,7 +1,6 @@
 package cn.clims.controller;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,24 +46,7 @@ public class AdminController extends BaseController {
 	@Resource
 	private DeptService deptService;
 	
-	
-	/**
-	 * 進入系統管理員主頁
-	 * @param session
-	 * @return
-	 */
-	@RequestMapping(value="/main.html")
-	public ModelAndView main(HttpSession session){
-		if(session.getAttribute(Constants.SESSION_USER) == null){  //用户未登录或session已过期
-			return new ModelAndView("redirect:/");
-		}
-			
-		Map<String,Object> model = new HashMap<>();
-		setBaseModel(model); //设置功能列表以及存储当前登录用户的信息
-		session.setAttribute(Constants.SESSION_BASE_MODEL, model);
-		
-		return new ModelAndView("main",getBaseModel());
-	}
+
 	
 	/**
 	 * 查看用户列表（分頁查詢）
@@ -165,7 +147,7 @@ public class AdminController extends BaseController {
 			//用于回显
 			model.addAttribute("s_userCode", s_userCode);
 			model.addAttribute("s_roleId", s_roleId);
-			return new ModelAndView("userManage");
+			return new ModelAndView("admin/userManage");
 		}
 	}
 	
@@ -217,35 +199,6 @@ public class AdminController extends BaseController {
 		}
 	}
 	
-	@RequestMapping(value="/modifyPwd.html",method=RequestMethod.POST)
-	@ResponseBody
-	public Object modifyPassword(@RequestParam String userJson){
-		logger.debug("正在修改密码。。。");
-		User sessionUser = this.getCurrentUser();
-		if(userJson == null || userJson.equals("")){
-			return "nodata";
-		}else{
-			User user = (User)JSONObject.toBean(JSONObject.fromObject(userJson),User.class);
-			user.setId(sessionUser.getId());
-			user.setUserCode(sessionUser.getUserCode());
-			try {
-				if(userService.getLoginUser(user) != null){
-					user.setUserPassword(user.getUserPassword2());
-					user.setModifyBy(sessionUser.getId());
-					user.setModifyDate(new Date());
-					
-					userService.modifyUser(user);
-				}else{
-					return "oldpwdwrong";  //输入的原密码错误
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				return "failed";
-			}
-		}
-		return "success";
-	}
-	
 	@RequestMapping(value="/viewUser.html",produces={"text/html;charset=UTF-8"},method=RequestMethod.POST)
 	@ResponseBody
 	public Object viewUser(@RequestParam(value="id",required=false)String id){
@@ -285,12 +238,10 @@ public class AdminController extends BaseController {
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
-				
 			}
 		}
 		return new ModelAndView("redirect:/backend/admin/userManage.html");
 	}
-	
 	
 	@RequestMapping(value="/deleteUser.html",produces="text/html;charset=UTF-8",method=RequestMethod.POST)
 	@ResponseBody
@@ -320,67 +271,4 @@ public class AdminController extends BaseController {
 		
 	}
 	
-
-	
-	/**
-	 * 进入完善个人信息页面
-	 * @param session
-	 * @return
-	 */
-	@RequestMapping("/modifyInfo.html")
-	public ModelAndView modifyInfo(HttpSession session,Model model){
-		
-		logger.debug("modifyInfo========");
-		if(session.getAttribute(Constants.SESSION_BASE_MODEL)==null || getCurrentUser() == null){  //会话已关闭，请重新登录
-			return new ModelAndView("redirect:/");
-		}else{
-			try {
-				User user = new User();
-				user.setId(this.getCurrentUser().getId());
-				user = userService.getUserById(user);
-				model.addAllAttributes(baseModel);
-				model.addAttribute("deptList",deptService.getDeptList());
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-				return new ModelAndView("redirect:/");
-			}
-			return new ModelAndView("modifyInfo");
-		}
-	}
-	
-	
-	/**
-	 * 执行完善个人信息保存操作
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value="/modifyInfoSave.html",method=RequestMethod.POST)
-	public ModelAndView modifyInfoSave(HttpSession session,@ModelAttribute("mUser") User mUser){
-		logger.debug("modifyInfo save========");
-		if(session.getAttribute(Constants.SESSION_BASE_MODEL)==null || getCurrentUser() == null){
-			return new ModelAndView("redirect:/");
-		} else {
-			try {
-				logger.debug("perfectUser======== user : "+mUser);
-				logger.debug("id:"+mUser.getId()+
-							 "\tuserCode:"+mUser.getUserCode()+
-							 "\tuserPassword:"+mUser.getUserPassword()+
-							 "\tuserName:"+mUser.getUserName()+
-							 "\tidCard:"+mUser.getIdCard()+
-							 "\tphone:"+mUser.getPhone());
-				mUser.setUserCode(null);
-				mUser.setUserPassword(null);
-				mUser.setModifyBy(this.getCurrentUser().getId());
-				mUser.setModifyDate(new Date());
-				userService.modifyUser(mUser);
-	
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-				return new ModelAndView("redirect:/");
-			}
-		}
-		return new ModelAndView("redirect:/backend/admin/main.html");
-	}
 }

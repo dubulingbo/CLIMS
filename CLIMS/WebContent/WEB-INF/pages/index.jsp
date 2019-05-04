@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>实验室仪器设备管理系统</title>
+	<title>实验室仪器管理系统</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
 
@@ -12,6 +12,9 @@
 	<style type="text/css">
 	  body {
 		padding-bottom: 40px;
+		background-image:url('/statics/img/bg_index.jpg');
+		background-repeat:no-repeat;
+		background-size:cover;
 	  }
 	  .sidebar-nav {
 		padding: 9px 0;
@@ -40,7 +43,7 @@
 	<![endif]-->
 
 	<!-- The fav icon -->
-	<link rel="shortcut icon" href="${pageContext.request.contextPath }/statics/img/favicon.ico">
+	<link rel="shortcut icon" href="${pageContext.request.contextPath }/statics/img/logo.ico">
 		
 </head>
 
@@ -50,7 +53,7 @@
 		
 			<div class="row-fluid">
 				<div class="span12 center login-header">
-					<h2>实验室仪器设备管理</h2>
+					<h2 style="color:green;">College Laboratory Instrument Manage System</h2>
 				</div><!--/span-->
 			</div><!--/row-->
 			
@@ -60,7 +63,7 @@
 						Please login with your Username and Password.
 					</div>
 					<div class="form-horizontal">
-					<fieldset>
+						<fieldset>
 							<div class="input-prepend" title="登录账号" data-rel="tooltip">
 								<span class="add-on"><i class="icon-user"></i></span>
 								<input autofocus class="input-large span10" name="userCode" id="userCode" type="text" value="" />

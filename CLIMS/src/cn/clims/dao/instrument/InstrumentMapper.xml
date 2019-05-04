@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.clims.dao.instrument.InstrumentMapper">
+	
+	<select id="getInstrumentList" parameterType="instStock" resultType="instStock">
+		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
+			(select speciesName from clims_species where id = ins.classNo) as className,
+	   		ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,    
+	   		(select locName from clims_location where id = inst.locNo) as locName
+	   	from clims_instStock inst,clims_instrument ins 
+	   	where inst.instrumentId=ins.id
+			<if test="instrumentName != null and instrumentName != ''">
+				and ins.instrumentName like CONCAT('%',#{instrumentName},'%')
+			</if>
+			<if test="instrumentNo != null and instrumentNo != ''">
+				and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
+			</if>
+			<if test="classNo != null">
+				and ins.classNo = #{classNo}
+			</if>
+			<if test="lowPrice != null">
+				and ins.price &gt;= #{lowPrice}  <!-- 小于：&lt;    小于或等于：&lt;=   大于：&gt;    大于或等于：&gt;=   &：&amp; -->
+			</if>
+			<if test="highPrice != null">
+				and ins.price &lt;= #{highPrice}
+			</if>
+			<if test="startDate != null">
+				and ins.productionDate &gt;= #{startDate}  <!-- 小于：&lt;    小于或等于：&lt;=   大于：&gt;    大于或等于：&gt;=   &：&amp; -->
+			</if>
+			<if test="endDate != null">
+				and ins.productionDate &lt;= #{endDate}
+			</if>
+			<if test="stockNumber != null">
+				and inst.stockNumber &gt; #{stockNumber}
+			</if>
+		order by inst.creationDate DESC limit #{startPageNo},#{pageSize}
+	</select>
+	
+	<select id="count" resultType="int" parameterType="instStock">
+		select count(1) from clims_instStock inst,clims_instrument ins 
+			where inst.instrumentId=ins.id
+			<if test="instrumentName != null and instrumentName != ''">
+				and ins.instrumentName like CONCAT('%',#{instrumentName},'%')
+			</if>
+			<if test="instrumentNo != null and instrumentNo != ''">
+				and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
+			</if>
+			<if test="classNo != null">
+				and ins.classNo = #{classNo}
+			</if>
+			<if test="lowPrice != null">
+				and ins.price &gt;= #{lowPrice}  <!-- 小于：&lt;    小于或等于：&lt;=   大于：&gt;    大于或等于：&gt;=   &：&amp; -->
+			</if>
+			<if test="highPrice != null">
+				and ins.price &lt;= #{highPrice}
+			</if>
+			<if test="startDate != null">
+				and ins.productionDate &gt;= #{startDate}  <!-- 小于：&lt;    小于或等于：&lt;=   大于：&gt;    大于或等于：&gt;=   &：&amp; -->
+			</if>
+			<if test="endDate != null">
+				and ins.productionDate &lt;= #{endDate}
+			</if>
+			<if test="stockNumber != null">
+				and inst.stockNumber &gt; #{stockNumber}
+			</if>
+	</select>
+	
+	<update id="updateInstStock" parameterType="instStock">
+		update clims_instStock
+		<set>
+			<if test="dept != null and dept != ''">dept = #{dept},</if>
+			<if test="stockManager != null and stockManager != ''">stockManager = #{stockManager},</if>
+			<if test="managerTel != null and managerTel != ''">managerTel = #{managerTel},</if>
+			<if test="locNo != null">locNo = #{locNo},</if>
+			<if test="stockNumber != null">stockNumber = #{stockNumber},</if>
+		</set>
+		where instrumentId = #{instrumentId}
+	</update>
+	
+	<insert id="addInstrument" parameterType="instrument">
+		insert into clims_instrument(instrumentName,instrumentNo,instrumentType,
+									 classNo,price,manufacturer,productionDate,
+									 country,number,note,createdBy,
+									 creationDate)
+		values(#{instrumentName},#{instrumentNo},#{instrumentType},
+			   #{classNo},#{price},#{manufacturer},#{productionDate},
+			   #{country},#{number},#{note},#{createdBy},
+			   #{creationDate})
+	</insert>
+	<!-- 添加仪器信息还未实现 -->
+	<!-- <insert id="addInstStock" parameterType="instStock">
+		insert into clims_instrument(instrumentName,instrumentNo,instrumentType,
+									 classNo,price,manufacturer,productionDate,
+									 country,number,note,createdBy,
+									 creationDate)
+		values(#{instrumentName},#{instrumentNo},#{instrumentType},
+			   #{classNo},#{price},#{manufacturer},#{productionDate},
+			   #{country},#{number},#{note},#{createdBy},
+			   #{creationDate})
+	</insert> -->
+	
+	<select id="instrumentNoIsExist" resultType="int" parameterType="string">
+		select count(1) from clims_instrument
+			where instrumentNo = #{instrumentNo}
+	</select>
+	
+	<select id="getInstStockByInstId" parameterType="integer" resultType="instStock">
+		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
+			(select speciesName from clims_species where id = ins.classNo) as className,
+	   		ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,    
+	   		(select locName from clims_location where id = inst.locNo) as locName
+	   	from clims_instStock inst,clims_instrument ins 
+		where inst.instrumentId = ins.id and inst.instrumentId = #{instrumentId}
+	</select>
+	
+	<select id="instrumentNameIsExist" parameterType="instrument" resultType="int">
+		select count(1) from clims_instrument where instrumentName = #{instrumentName} and instrumentType = #{instrumentType}
+	</select>
+	
+	<insert id="addInstAssign" parameterType="instAssign">
+		insert into 
+		clims_instAssign(instrumentId,dept,assignNumber,
+			createdBy,creationDate,status)
+		values(#{instrumentId},#{dept},#{assignNumber},
+			#{createdBy},#{creationDate},#{status})
+	</insert>
+	
+	
+	
+	
+	
+	
+	<select id="getInstAssignList" parameterType="instAssign" resultType="instAssign">
+		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
+			(select speciesName from clims_species where id = ins.classNo) as className,
+	   		ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,    
+	   		(select locName from clims_location where id = inst.locNo) as locName,
+	   		(select userName from clims_user where id = inst.createdBy) as createdByName
+	   	from clims_instAssign inst,clims_instrument ins 
+	   	where inst.instrumentId=ins.id
+	   		<if test="dept != null and dept != ''">
+	   			and inst.dept = #{dept}
+	   		</if>
+	   		<if test="status != null">
+	   			and inst.status = #{status}
+	   		</if>
+	   		order by inst.creationDate ASC
+	   		<if test="startPageNo != null and pageSize != null">
+	   			limit #{startPageNo},#{pageSize}
+	   		</if>
+	</select>
+	<select id="getInstAssignCount" parameterType="instAssign" resultType="int">
+		select count(1) from clims_instAssign inst,clims_instrument ins 
+		where inst.instrumentId=ins.id
+	   		<if test="dept != null and dept != ''">
+	   			and inst.dept = #{dept}
+	   		</if>
+	   		<if test="status != null">
+	   			and inst.status = #{status}
+	   		</if>
+	</select>
+	
+	
+	
+	<select id="getInstRepairList" parameterType="instRepair" resultType="instRepair">
+		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
+			(select speciesName from clims_species where id = ins.classNo) as className,
+	   		ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,
+	   		(select locName from clims_location where id = inst.locNo) as locName,
+	   		(select userName from clims_user where id = inst.createdBy) as createdByName
+	   	from clims_instRepair inst,clims_instrument ins 
+	   	where inst.instrumentId=ins.id
+	   		<if test="dept != null and dept != ''">
+	   			and inst.dept = #{dept}
+	   		</if>
+	   		<if test="status != null">
+	   			and inst.status = #{status}
+	   		</if>
+	   		order by inst.creationDate ASC
+	   		<if test="startPageNo != null and pageSize != null">
+	   			limit #{startPageNo},#{pageSize}
+	   		</if>
+	</select>
+	<select id="getInstRepairCount" parameterType="instRepair" resultType="int">
+		select count(1) from clims_instRepair inst,clims_instrument ins 
+		where inst.instrumentId=ins.id
+	   		<if test="dept != null and dept != ''">
+	   			and inst.dept = #{dept}
+	   		</if>
+	   		<if test="status != null">
+	   			and inst.status = #{status}
+	   		</if>
+	</select>
+	
+	
+	
+	<select id="getInstScrapList" parameterType="instScrap" resultType="instScrap">
+		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
+			(select speciesName from clims_species where id = ins.classNo) as className,
+	   		ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,
+	   		(select userName from clims_user where id = inst.createdBy) as createdByName
+	   	from clims_instScrap inst,clims_instrument ins 
+	   	where inst.instrumentId=ins.id
+	   		<if test="dept != null and dept != ''">
+	   			and inst.dept = #{dept}
+	   		</if>
+	   		<if test="status != null">
+	   			and inst.status = #{status}
+	   		</if>
+	   		order by inst.creationDate ASC
+	   		<if test="startPageNo != null and pageSize != null">
+	   			limit #{startPageNo},#{pageSize}
+	   		</if>
+	</select>
+	<select id="getInstScrapCount" parameterType="instScrap" resultType="int">
+		select count(1) from clims_instScrap inst,clims_instrument ins 
+		where inst.instrumentId=ins.id
+	   		<if test="dept != null and dept != ''">
+	   			and inst.dept = #{dept}
+	   		</if>
+	   		<if test="status != null">
+	   			and inst.status = #{status}
+	   		</if>
+	</select>
+	
+	
+	
+	
+	
+	
+	<update id="updateInstAssign" parameterType="instAssign">
+		update clims_instassign
+		<set>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="assignManager != null and assignManager != ''">
+				assignManager = #{assignManager},
+			</if>
+			<if test="managerTel != null and managerTel != ''">
+				managerTel = #{managerTel},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<select id="getInstAssignById" parameterType="integer" resultType="instAssign">
+		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
+			(select speciesName from clims_species where id = ins.classNo) as className,
+	   		ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,    
+	   		(select locName from clims_location where id = inst.locNo) as locName
+	   	from clims_instassign inst,clims_instrument ins
+		where inst.instrumentId = ins.id and inst.id = #{id}
+	</select>
+	
+		
+</mapper>

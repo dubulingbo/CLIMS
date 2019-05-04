@@ -44,7 +44,7 @@ $(document).ready(function(){
 			user.userPassword = oldpwd;
 			user.userPassword2 = newpwd;
 			$.ajax({
-				url: 'modifyPwd.html',
+				url: '/modifyPwd.html',
 				type: 'POST',
 				data:{userJson:JSON.stringify(user)},
 				dataType: 'html',
@@ -74,12 +74,19 @@ $(document).ready(function(){
 			$('#aginpassword').val('');
 		}
 	});
-/**modifypassword add by bdqn_hl 2014-2-28 end*/
+/**modifypassword add by DubLBo 2019-4-12 end*/
+	
+	 var d = new Date();
+//   $('#a_cdate').val((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear());
+//   $('#reply_createTime').val((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear());
+   $('#a_cdate').val(d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate());
+   $('#reply_createTime').val(d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate());
+	
 
 	/** menuList start */
 	var result ="";
 	var json = eval('('+tt+')');
-//	alert(tt);
+
 	for(var i=0;i<json.length;i++){
 		/*
 		<li class="nav-header hidden-tablet" onclick="$('#test1').toggle(500);">后台管理</li>
@@ -96,23 +103,37 @@ $(document).ready(function(){
 		</li>
 		*/
 		//配置main menu
-//		result= result + '<li class=\"nav-header hidden-tablet\" onclick=\"$(\'#test'+i+'\').toggle(500);\" style=\"cursor:pointer;\">'+json[i].mainMenu.functionName+'</li>';                                                     
-		
-		//配置subMenu
-//		result = result + '<li><ul class=\"nav nav-tabs nav-stacked\" id=\"test'+i+'\">';
-		var pic;
-		switch(i){
-			case 0: pic = "icon-home";break;
-			case 1: pic = "icon-eye-open";break;
-			case 2: pic = "icon-edit";break;
-			case 3: pic = "icon-list-alt";break;
-			case 4: pic = "icon-font";break;
-			case 5: pic = "icon-picture";break;
-			default:pic = "icon-picture";
-		}
-		result = result + '<li><a class=\"ajax-link\" href=\"'+json[i].functionUrl+'\"><i class=\"'+pic+'\"></i><span class=\"hidden-tablet\"> '+json[i].functionName+'</span></a></li>';                   
-			
-//		result = result + '</ul></li>';
+		if(json[i].mainMenu.parentId == 0 && json[i].subMenus.length == 0){ //当前功能是主功能，但却没有子功能
+			var pic;
+			switch(i%7){
+				case 0: pic = "icon-home";break;
+				case 1: pic = "icon-eye-open";break;
+				case 2: pic = "icon-edit";break;
+				case 3: pic = "icon-list-alt";break;
+				case 4: pic = "icon-font";break;
+				case 5: pic = "icon-th";break;
+				case 6: pic = "icon-book";break;
+			}
+			result = result + '<li><a class=\"ajax-link\" href=\"'+json[i].mainMenu.functionUrl+'\"><i class=\"'+pic+'\"></i><span class=\"hidden-tablet\"> '+json[i].mainMenu.functionName+'</span></a></li>';
+		}else{
+			result= result + '<li class=\"nav-header hidden-tablet\" onclick=\"$(\'#test'+i+
+							 '\').toggle(500);\" style=\"cursor:pointer;\">'+json[i].mainMenu.functionName+'</li>';
+			//配置subMenu
+			result = result + '<li><ul class=\"nav nav-tabs nav-stacked\" id=\"test'+i+'\">';
+			for(var j=0;j<json[i].subMenus.length;j++){
+				var pic;
+				switch(j%4){
+					case 0: pic = "icon-align-justify";break;
+					case 1: pic = "icon-globe";break;
+					case 2: pic = "icon-star";break;
+					case 3: pic = "icon-lock";break;
+				}
+				result = result + '<li><a class=\"ajax-link\" href=\"'+json[i].subMenus[j].functionUrl+
+						'\"><i class=\"'+pic+'\"></i><span class=\"hidden-tablet\"> '+json[i].subMenus[j].functionName+
+						'</span></a></li>';
+			}
+			result = result + '</ul></li>';
+		}	
 	}
 	
 	for(var i=0;i<25-json.length;i++){

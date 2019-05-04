@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.clims.dao.affiche.AfficheMapper">
+	
+	<select id="getList" resultType="affiche" parameterType="affiche">
+		select * from clims_affiche order by publishDate desc
+	</select>
+	<select id="getAfficheList" resultType="affiche" parameterType="affiche">
+		select * from clims_affiche order by publishDate desc limit #{startPageNo},#{pageSize}
+	</select>
+
+	<select id="getAffiche" resultType="affiche" parameterType="affiche">
+		select * from clims_affiche where id = #{id}
+	</select>
+	
+	<select id="count" resultType="int" parameterType="affiche">
+		select count(id) from clims_affiche
+	</select>
+	<!-- 获取主页的公告列表，只显示最近的10条公告 -->
+	<select id="getPortalAfficheList" resultType="affiche" parameterType="affiche">
+		select *
+			from clims_affiche
+			<!-- NOW() BETWEEN startDate AND endDate  -->
+			order by publishDate desc
+			limit #{startPageNo},#{pageSize}
+	</select>
+	
+	<select id="portalCount" resultType="int" parameterType="affiche">
+		select count(id) from clims_affiche 
+			WHERE NOW() BETWEEN startDate AND endDate
+	</select>
+	
+	<insert id="addAffiche" parameterType="affiche">
+		insert into clims_affiche (code,title,content,publisher,publishDate) values(
+			#{code},
+			#{title},
+			#{content},
+			#{publisher},
+			#{publishDate}
+			)
+	</insert>
+	
+	<update id="modifyAffiche" parameterType="affiche">
+		update clims_affiche set
+			code = #{code},
+			title = #{title},
+			content = #{content},
+			publisher = #{publisher},
+			publishDate = #{publishDate},
+			startDate = #{startDate},
+			endDate = #{endDate}
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteAffiche" parameterType="affiche">
+		delete from clims_affiche where id = #{id}
+	</delete>
+</mapper>  
+	

@@ -13,5 +13,16 @@ public interface FunctionMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Function> getFunctionListByRoleId(@Param(value="roleId") Integer roleId)throws Exception;
+	public List<Function> getSubFunctionList(Function function)throws Exception;
+	
+	/**
+	 * 未完善个人信息，不能使用其他功能，只能先补全个人信息，方能使用本系统
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Function> getFunctionListByRoleId2()throws Exception;
+
+	public List<Function> getAllHrefByRoleId(@Param(value="roleId") Integer roleId)throws Exception;
+
+	public List<Function> getMainFunctionList(@Param(value="userRole") Integer userRole)throws Exception;
 }

@@ -1,9 +1,12 @@
 package cn.clims.pojo;
 
-public class Base {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class Base implements Serializable{
 	private Integer startPageNo;
 	private Integer pageSize;
-	private Integer id;
+	protected Integer id;
 	
 	public Integer getId() {
 		return id;

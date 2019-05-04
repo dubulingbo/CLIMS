@@ -1,5 +1,6 @@
 package cn.clims.pojo;
 
+@SuppressWarnings("serial")
 public class Dept extends Base{
 	private Integer deptNo;
 	private String deptName;

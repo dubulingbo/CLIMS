@@ -8,6 +8,9 @@
     	
     	<!-- footer starts -->
     	<hr>
+    	
+    	
+    	
 		<footer>
 			<p class="pull-left"><span>CLIMS开发团队&nbsp;&nbsp;&copy;2019&nbsp;&nbsp;DubLBo&emsp;&emsp;版权所有</span></p>
 			<p class="pull-right">Contact us: <b>&nbsp;dubulingbo@163.com</b></p>
@@ -88,4 +91,13 @@
 	<script src="${pageContext.request.contextPath }/statics/js/jquery.history.js"></script>
 	<!-- application script for Charisma demo -->
 	<script src="${pageContext.request.contextPath }/statics/js/charisma.js"></script>
+	
+	<!--  start 2019-->
+	<script src="${pageContext.request.contextPath }/statics/js/json2.js"></script>
+	<!-- add by DubLBo 2019-04-18 multiple file ajaxfileupload plugin-->
+	<script type="text/javascript" src="${pageContext.request.contextPath }/statics/js/ajaxfileupload.js"></script>
+	<!-- add by DubLBo 2019-04-18 WdatePicker plugin-->
+	<script type="text/javascript" src="${pageContext.request.contextPath }/statics/medire/WdatePicker.js"></script>
+	
+	<!-- 外部引用的js文件 end 2019-->
 </html>

@@ -4,7 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.clims.dao.function.FunctionMapper">
 	
-	<select id="getFunctionListByRoleId" parameterType="Integer" resultType="function">
+	<select id="getSubFunctionList" parameterType="function" resultType="function">
+		select * from clims_function where roleId = #{roleId} and parentId=#{id} and isMenu=1
+	</select>
+	
+	<select id="getMainFunctionList" parameterType="integer" resultType="function">
+		select * from clims_function where (roleId=#{userRole} or roleId=999) and isMenu=1 and parentId=0
+	</select>
+	
+	<select id="getAllHrefByRoleId" parameterType="Integer" resultType="function">
 		select * from clims_function where roleId = #{roleId} or roleId=999
 	</select>
 	
