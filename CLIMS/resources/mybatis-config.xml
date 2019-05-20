@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>  
 <!DOCTYPE configuration   
  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"   
- "http://mybatis.org/dtd/mybatis-3-config.dtd">  
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-	<settings>  
-        <!-- changes from the defaults -->  
-       <setting name="lazyLoadingEnabled" value="false" />  
+	<settings>
+		<!-- changes from the defaults -->
+		<setting name="lazyLoadingEnabled" value="false" />
+		<!-- <setting name="autoMappingBehavior" value="N0NE"/> --> <!-- 不实现自动映射，默认值为PARTIAL（只能对简单类型进行自定映射，即不含association和collection） -->
+		<setting name="autoMappingBehavior" value="FULL"/>  <!-- 实现在复杂类型下也自动映射 -->
+		<setting name="logImpl" value="LOG4J"/>   <!-- 配置日志打印工厂（实现类） -->
 	</settings>
 
 
-     <typeAliases>
-         <!--这里给实体类取别名，方便在mapper配置文件中使用-->
-         <package name="cn.clims.pojo"/>
-     </typeAliases>
+	<typeAliases>
+		<!--这里给实体类取别名，方便在mapper配置文件中使用 -->
+		<package name="cn.clims.pojo" />
+	</typeAliases>
 </configuration>

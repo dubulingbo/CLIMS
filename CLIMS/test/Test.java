@@ -38,8 +38,15 @@ public class Test {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		
-		
+	}
+	
+	@org.junit.Test
+	public void test2(){
+		String str = ",1,3,7,10,,,,,,,";
+		System.out.println("length="+str.split(",").length+" start");
+		for(String s : str.split(","))
+			System.out.println(s);
+		System.out.print("end");
 	}
 
 }

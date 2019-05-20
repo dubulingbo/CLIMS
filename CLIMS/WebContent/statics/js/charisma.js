@@ -1,5 +1,5 @@
 $(document).ready(function(){
-/**modifypassword add by DubLBo 2019-4-12 start*/
+	/**modifypassword add by DubLBo 2019-4-12 start*/
 	//取消之后需要做一些清空操作
 	$('.modifyPwdCancel').click(function(e){
 		$("#modifypwdtip").html('');
@@ -44,7 +44,7 @@ $(document).ready(function(){
 			user.userPassword = oldpwd;
 			user.userPassword2 = newpwd;
 			$.ajax({
-				url: '/modifyPwd.html',
+				url: '/backend/modifyPwd.html',
 				type: 'POST',
 				data:{userJson:JSON.stringify(user)},
 				dataType: 'html',
@@ -74,7 +74,7 @@ $(document).ready(function(){
 			$('#aginpassword').val('');
 		}
 	});
-/**modifypassword add by DubLBo 2019-4-12 end*/
+	/**modifypassword add by DubLBo 2019-4-12 end*/
 	
 	 var d = new Date();
 //   $('#a_cdate').val((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear());
@@ -86,63 +86,36 @@ $(document).ready(function(){
 	/** menuList start */
 	var result ="";
 	var json = eval('('+tt+')');
-
+	var clims_count = 0;
+	
 	for(var i=0;i<json.length;i++){
-		/*
-		<li class="nav-header hidden-tablet" onclick="$('#test1').toggle(500);">后台管理</li>
-		<li>
-			<ul class="nav nav-tabs nav-stacked" id="test1">
-				<li><a class="ajax-link" href="#"><i class="icon-home"></i><span class="hidden-tablet">用户管理</span></a></li>
-				<li><a class="ajax-link" href="#"><i class="icon-eye-open"></i><span class="hidden-tablet">角色管理</span></a></li>
-				<li><a class="ajax-link" href="#"><i class="icon-edit"></i><span class="hidden-tablet"> 权限管理</span></a></li>
-				<li><a class="ajax-link" href="#"><i class="icon-list-alt"></i><span class="hidden-tablet">商品管理</span></a></li>
-				<li><a class="ajax-link" href="#"><i class="icon-font"></i><span class="hidden-tablet">商品套餐管理</span></a></li>
-				<li><a class="ajax-link" href="#"><i class="icon-picture"></i><span class="hidden-tablet">基础信息</span></a></li>
-				<li><a class="ajax-link" href="#"><i class="icon-picture"></i><span class="hidden-tablet">数据字典</span></a></li>
-			</ul>
-		</li>
-		*/
 		//配置main menu
-		if(json[i].mainMenu.parentId == 0 && json[i].subMenus.length == 0){ //当前功能是主功能，但却没有子功能
+		result= result + '<li class=\"nav-header hidden-tablet\">'+json[i].mainMenu.functionName+'</li>';
+		//配置subMenu
+		for(var j=0;j<json[i].subMenus.length;j++){
+			clims_count++;
 			var pic;
-			switch(i%7){
+			switch(j%10){
 				case 0: pic = "icon-home";break;
 				case 1: pic = "icon-eye-open";break;
 				case 2: pic = "icon-edit";break;
 				case 3: pic = "icon-list-alt";break;
 				case 4: pic = "icon-font";break;
-				case 5: pic = "icon-th";break;
-				case 6: pic = "icon-book";break;
+				case 5: pic = "icon-globe";break;
+				case 6: pic = "icon-picture";break;
+				case 7: pic = "icon-lock";break;
+				case 8: pic = "icon-star";break;
+				case 9: pic = "icon-calendar";break;
 			}
-			result = result + '<li><a class=\"ajax-link\" href=\"'+json[i].mainMenu.functionUrl+'\"><i class=\"'+pic+'\"></i><span class=\"hidden-tablet\"> '+json[i].mainMenu.functionName+'</span></a></li>';
-		}else{
-			result= result + '<li class=\"nav-header hidden-tablet\" onclick=\"$(\'#test'+i+
-							 '\').toggle(500);\" style=\"cursor:pointer;\">'+json[i].mainMenu.functionName+'</li>';
-			//配置subMenu
-			result = result + '<li><ul class=\"nav nav-tabs nav-stacked\" id=\"test'+i+'\">';
-			for(var j=0;j<json[i].subMenus.length;j++){
-				var pic;
-				switch(j%4){
-					case 0: pic = "icon-align-justify";break;
-					case 1: pic = "icon-globe";break;
-					case 2: pic = "icon-star";break;
-					case 3: pic = "icon-lock";break;
-				}
-				result = result + '<li><a class=\"ajax-link\" href=\"'+json[i].subMenus[j].functionUrl+
-						'\"><i class=\"'+pic+'\"></i><span class=\"hidden-tablet\"> '+json[i].subMenus[j].functionName+
-						'</span></a></li>';
-			}
-			result = result + '</ul></li>';
-		}	
+			result = result + '<li><a href=\"'+json[i].subMenus[j].functionUrl+'\"><i class=\"'+pic+
+					'\"></i><span class=\"hidden-tablet\"> '+json[i].subMenus[j].functionName+'</span></a></li>';
+		}
 	}
-	
-	for(var i=0;i<25-json.length;i++){
+	for(var i=0;i<20-clims_count;i++){
 		result = result + '<br>';
 	}
 	$("#menus").append(result);
 	/** menuList end */
-	
-	
 	
 	//themes, change CSS with JS
 	//default theme(CSS) is cerulean, change it if needed

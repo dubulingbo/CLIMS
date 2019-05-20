@@ -6,5 +6,9 @@
 	<select id="getDeptList" resultType="dept">
 		select * from clims_dept
 	</select>
-
+	
+	<select id="getDnoByDname" parameterType="string" resultType="integer">
+		select deptNo from clims_dept where deptName = #{deptName}
+	</select>
+	
 </mapper>

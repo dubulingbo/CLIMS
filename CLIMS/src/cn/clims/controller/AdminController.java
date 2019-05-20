@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,7 +34,7 @@ import net.sf.json.JsonConfig;
 @Controller
 @RequestMapping("/backend/admin")
 public class AdminController extends BaseController {
-	private Logger logger = Logger.getLogger(AdminController.class);
+	//private Logger logger = Logger.getLogger(AdminController.class);
 	
 	@Resource
 	private UserService userService;
@@ -63,7 +62,7 @@ public class AdminController extends BaseController {
 			@RequestParam(value="s_userCode",required=false) String s_userCode,
 			@RequestParam(value="s_roleId",required=false) String s_roleId,
 			@RequestParam(value="pageIndex",required=false) String pageIndex){
-		logger.debug("进入用户管理页面！");
+		System.out.println("进入用户管理页面！");
 		Map<String,Object> baseModel = (Map<String,Object>)session.getAttribute(Constants.SESSION_BASE_MODEL);
 		if(baseModel == null){
 			return new ModelAndView("redirect:/");
@@ -90,7 +89,7 @@ public class AdminController extends BaseController {
 			}
 			
 			
-			logger.debug("pageIndex====================== " + pageIndex);
+			System.out.println("pageIndex====================== " + pageIndex);
 			
 			//page分页列表
 			PageSupport page = new PageSupport();
@@ -122,7 +121,7 @@ public class AdminController extends BaseController {
 				//mysql -- 分页查询limit ?,? （第一个参数下标从零开始）
 				user.setStartPageNo((page.getCurrentPageNo() -1)*page.getPageSize());
 				user.setPageSize(page.getPageSize());
-				logger.debug("此次将查询从 "+
+				System.out.println("此次将查询从 "+
 						(page.getCurrentPageNo()-1)*page.getPageSize()+"开始的 "+
 						 page.getPageSize()+" 条数据！");
 				List<User> userList = null;
@@ -155,7 +154,7 @@ public class AdminController extends BaseController {
 	@ResponseBody
 	public Object userCodeIsExist(@RequestParam(value="userCode",required=false)String userCode,
 			@RequestParam(value="id",required=false)String id){
-		logger.debug("userCodeIsExist userCode = "+userCode+"  id = "+id);
+		System.out.println("userCodeIsExist userCode = "+userCode+"  id = "+id);
 		
 		String result = "failed";
 		User _user = new User();
@@ -183,7 +182,7 @@ public class AdminController extends BaseController {
 			return new ModelAndView("redirect:/");
 		}else{
 			try {
-				logger.debug("addUser========"+addUser);
+				System.out.println("addUser========"+addUser);
 				String password = addUser.getUserPassword();
 				String userPassword = password.substring(password.length()-6);
 				addUser.setUserPassword(userPassword);

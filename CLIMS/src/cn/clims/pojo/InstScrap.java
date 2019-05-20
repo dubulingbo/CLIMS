@@ -5,10 +5,13 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class InstScrap extends Instrument {
 	private Integer instrumentId;
+	private String assignId;   //调拨库存编号
 	private String dept;
+	private String address;   //报废地址
+	private String scrapDetail;  //报废简述
 	private String dealer;  //处理者
 	private String dealerTel;
-	private Date dealDate;  //处理日期
+	private Date dealDate;  //处理日期 ，即报废时间
 	private Integer scrapNumber;
 	private Integer status;
 	
@@ -55,5 +58,23 @@ public class InstScrap extends Instrument {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public String getAssignId() {
+		return assignId;
+	}
+	public void setAssignId(String assignId) {
+		this.assignId = assignId;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getScrapDetail() {
+		return scrapDetail;
+	}
+	public void setScrapDetail(String scrapDetail) {
+		this.scrapDetail = scrapDetail;
 	}
 }

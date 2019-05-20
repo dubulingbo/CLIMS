@@ -16,7 +16,7 @@ public class InstStock extends Instrument{
 	private Integer stockNumber;
 	
 	
-	private String locName;  //所在地名称（实验室/房间号）
+	
 
 
 	public Integer getInstrumentId() {
@@ -79,14 +79,6 @@ public class InstStock extends Instrument{
 	}
 
 
-	public String getLocName() {
-		return locName;
-	}
-
-
-	public void setLocName(String locName) {
-		this.locName = locName;
-	}
 	
 	
 	

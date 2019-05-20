@@ -2,6 +2,8 @@ package cn.clims.dao.dept;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import cn.clims.pojo.Dept;
 
 public interface DeptMapper {
@@ -12,4 +14,6 @@ public interface DeptMapper {
 	 * @throws Exception
 	 */
 	public List<Dept> getDeptList()throws Exception;
+	
+	public Integer getDnoByDname(@Param("deptName")String deptName)throws Exception;
 }

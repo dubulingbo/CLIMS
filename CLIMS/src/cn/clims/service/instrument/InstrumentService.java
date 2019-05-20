@@ -2,6 +2,7 @@ package cn.clims.service.instrument;
 
 import java.util.List;
 
+
 import cn.clims.pojo.Affiche;
 import cn.clims.pojo.InstAssign;
 import cn.clims.pojo.InstRepair;
@@ -11,13 +12,13 @@ import cn.clims.pojo.Instrument;
 import cn.clims.pojo.User;
 
 public interface InstrumentService {
-	public List<InstStock> getInstrumentList(InstStock instStock)throws Exception;
-	public int count(InstStock instStock)throws Exception;
+	public List<InstStock> getInstStockList(InstStock instStock)throws Exception;
+	public int getInstStockCount(InstStock instStock)throws Exception;
 	public int updateInstStock(InstStock instStock)throws Exception;
-	public int addInstrument(Instrument instrument)throws Exception;
+	public void cl_addInstStock(InstStock instrument)throws Exception;
 	public int instrumentNoIsExist(String instrumentNo)throws Exception;
 	public InstStock getInstStockByInstId(Integer instrumentId)throws Exception;
-	public int instrumentNameIsExist(Instrument instrument)throws Exception;
+	public int instrumentIsExist(Instrument instrument)throws Exception;
 	public void cl_addInstAssign(InstAssign instAssign, Affiche affiche)throws Exception;
 	public List<InstAssign> getInstAssignList(InstAssign assign)throws Exception;
 	public InstAssign getInstAssignById(Integer h_id)throws Exception;
@@ -33,4 +34,9 @@ public interface InstrumentService {
 	
 	public void cl_instApplyHandle(InstAssign instAssign, InstRepair instRepair, 
 			InstScrap instScrap, User user, Integer h_flag, Affiche affiche)throws Exception;
+	public List<InstRepair> cl_addInstRepair(InstRepair instRepair, Affiche affiche)throws Exception;
+	public InstRepair getInstRepairById(InstRepair instRepair)throws Exception;
+	public void cl_addInstScrap(InstScrap instscrap, Affiche aff)throws Exception;
+	public InstAssign getInstAssignByAssId(String assignId)throws Exception;
+	public InstScrap getInstScrapById(InstScrap instScrap)throws Exception;
 }

@@ -1,104 +1,105 @@
-<?xml version="1.0" encoding="UTF-8"?>  
-    <beans xmlns="http://www.springframework.org/schema/beans"  
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
-            xmlns:aop="http://www.springframework.org/schema/aop"  
-            xmlns:p="http://www.springframework.org/schema/p"  
-            xmlns:tx="http://www.springframework.org/schema/tx"  
-            xmlns:context="http://www.springframework.org/schema/context"  
-            xsi:schemaLocation="   
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="   
                 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd   
                 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd   
                 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
                 http://www.springframework.org/schema/context 
-                http://www.springframework.org/schema/context/spring-context.xsd">  
-    
-    <context:component-scan base-package="cn.clims.service"/>
-    <context:annotation-config />
-   	<context:property-placeholder location="classpath:database.properties"/>
-    
-    <!-- JNDI获取数据源（dbcp连接池）singleton:为单例模式 -->
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" scope="singleton">
-		<property name="driverClassName" value="${mysql.driver}"/>
-		<property name="url" value="${mysql.url}"/>
-		<property name="username" value="${mysql.user}"/>
-		<property name="password" value="${mysql.password}"/>
-		<property name="initialSize" value="${mysql.initialSize}"/>
-		<property name="maxActive" value="${mysql.maxActive}"/>
-		<property name="maxIdle" value="${mysql.maxIdle}"/> <!-- 最大空闲数 -->
-		<property name="minIdle" value="${mysql.minIdle}"/>
-		<property name="maxWait" value="${mysql.maxWait}"/><!-- 最大等待时间，单位：ms；超过会抛异常 -->
+                http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan base-package="cn.clims.service" />
+	<context:annotation-config />
+	<context:property-placeholder location="classpath:database.properties" />
+
+	<!-- JNDI获取数据源（dbcp连接池）singleton:为单例模式 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close" scope="singleton">
+		<property name="driverClassName" value="${mysql.driver}" />
+		<property name="url" value="${mysql.url}" />
+		<property name="username" value="${mysql.user}" />
+		<property name="password" value="${mysql.password}" />
+		<property name="initialSize" value="${mysql.initialSize}" />
+		<property name="maxActive" value="${mysql.maxActive}" />
+		<property name="maxIdle" value="${mysql.maxIdle}" /> <!-- 最大空闲数 -->
+		<property name="minIdle" value="${mysql.minIdle}" />
+		<property name="maxWait" value="${mysql.maxWait}" /><!-- 最大等待时间，单位：ms；超过会抛异常 -->
 		<!-- 当前的空闲连接数<2 && 当前活动数>最大活动数-3 -->
-		<property name="removeAbandoned" value="${mysql.removeAbandoned}"/>
-		<property name="removeAbandonedTimeout" value="${mysql.removeAbandonedTimeout}"/>
-		
-		<!-- 配置sql心跳：保证连接池中的连接是真实有效的连接
-			 testWhileIdle testOnBorrow testOnReturn
-			 validationQuery-select 1
-		 -->
+		<property name="removeAbandoned" value="${mysql.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${mysql.removeAbandonedTimeout}" />
+
+		<!-- 配置sql心跳：保证连接池中的连接是真实有效的连接 testWhileIdle testOnBorrow testOnReturn 
+			validationQuery-select 1 -->
 		<!-- 开启Evict的定时校验，循环校验 -->
-		<property name="testWhileIdle" value="true"/>
+		<property name="testWhileIdle" value="true" />
 		<!-- 定义Evict的时间间隔，单位：ms，大于0才会开启Evict -->
-		<property name="timeBetweenEvictionRunsMillis" value="600000"/>
+		<property name="timeBetweenEvictionRunsMillis" value="600000" />
 		<!-- 在进行borrowObject处理时，会对拿到的连接进行校验-false不校验 -->
-		<property name="testOnBorrow" value="false"/>
+		<property name="testOnBorrow" value="false" />
 		<!-- 在进行returnObject处理时，会对返回的连接进行校验-false不检验 -->
-		<property name="testOnReturn" value="false"/>
+		<property name="testOnReturn" value="false" />
 		<!-- 校验使用的sql语句，一定不能太复杂，复杂的会影响性能 -->
-		<property name="validationQuery" value="select 1"/>
+		<property name="validationQuery" value="select 1" />
 		<!-- 配置每次校验连接的数量，一般等于maxActive -->
-		<property name="numTestsPerEvictionRun" value="${mysql.maxActive}"/>
+		<property name="numTestsPerEvictionRun" value="${mysql.maxActive}" />
 	</bean>
-	
- 	<!-- 配置mybatis SqlSessionFactoryBean -->
- 	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
- 		<property name="dataSource" ref="dataSource"/>
- 		<property name="configLocation" value="classpath:mybatis-config.xml"/>
- 	</bean>
- 	
- 	<!-- mapper接口所在的包名，spring会自动查找其下的Mapper -->
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-    	<property name="basePackage" value="cn.clims.dao"/>
-    </bean>
-    
-    <!-- 事务管理 -->
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource"/>
+
+	<!-- 配置mybatis SqlSessionFactoryBean -->
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
-	
+
+	<!-- mapper接口所在的包名，spring会自动查找其下的Mapper -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.clims.dao" />
+	</bean>
+
+	<!-- 事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
 	<!-- AOP事务管理 -->
-	<aop:aspectj-autoproxy/>
+	<aop:aspectj-autoproxy />
 	<aop:config proxy-target-class="true">
-		<aop:pointcut expression="execution(* *cn.clims.service..*(..))" id="transService"/>
-		<aop:advisor advice-ref="txAdvice" pointcut-ref="transService"/>
+		<aop:pointcut expression="execution(* *cn.clims.service..*(..))"
+			id="transService" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="transService" />
 	</aop:config>
-	
-	<!-- txAdvice -->      
+
+	<!-- txAdvice -->
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method name="cl*" propagation="REQUIRED" rollback-for="Exception"/>
+			<tx:method name="cl*" propagation="REQUIRED" rollback-for="Exception" />
 		</tx:attributes>
 	</tx:advice>
-	
-    
-    <!--redis 配置 开始-->
+
+
+	<!--redis 配置 开始 -->
 	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-		<property  name="maxActive"  value="${redis.maxActive}" />
-		<property  name="maxIdle"   value="${redis.maxIdle}" />
-		<property  name="maxWait"  value="${redis.maxWait}" />
-		<property  name="testOnBorrow"  value="true" />
+		<property name="maxActive" value="${redis.maxActive}" />
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxWait" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="true" />
 	</bean>
-	<!-- Config poolConfig, String host, int port, int timeout, String password, int database -->
-	<bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy" >
-		<constructor-arg ref="jedisPoolConfig"/>
-		<constructor-arg value="${redis.host}"/>
-		<constructor-arg value="${redis.port}"/>
-		<constructor-arg value="${redis.timeout}"/>
-		<constructor-arg value="${redis.pass}"/> <!-- 密码 -->
-		<constructor-arg value="${redis.default.db}"/><!-- 默认使用第零个数据库db0 -->
+	<!-- Config poolConfig, String host, int port, int timeout, String password, 
+		int database -->
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool"
+		destroy-method="destroy">
+		<constructor-arg ref="jedisPoolConfig" />
+		<constructor-arg value="${redis.host}" />
+		<constructor-arg value="${redis.port}" />
+		<constructor-arg value="${redis.timeout}" />
+		<constructor-arg value="${redis.pass}" /> <!-- 密码 -->
+		<constructor-arg value="${redis.default.db}" /><!-- 默认使用第零个数据库db0 -->
 	</bean>
 	<bean id="redisAPI" class="cn.clims.tools.RedisAPI">
-		<property name="jedisPool" ref="jedisPool"/>
-	</bean> 
-    
-    
+		<property name="jedisPool" ref="jedisPool" />
+	</bean>
+
+
 </beans>

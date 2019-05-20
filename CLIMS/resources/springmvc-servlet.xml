@@ -1,60 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:mvc="http://www.springframework.org/schema/mvc"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.2.xsd
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
-        
-	<!-- 以 annotation的方式，装配controller-->
-	<mvc:annotation-driven/>
-   
+
+	<!-- 以 annotation的方式，装配controller -->
+	<mvc:annotation-driven />
+
 	<!-- spring扫描包下所有类，让标注spring注解的类生效 -->
-	<context:component-scan base-package="cn.clims"/>
-   
-    
-    <!-- 配置多视图解析器 -->
-    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <property name="favorParameter" value="true"/><!-- 根据参数值确定匹配的视图-favor -->
-        <property name="defaultContentType" value="text/html" /><!-- 默认展示视图类型 -->
-        <property name="mediaTypes">
-            <map>
-            	<entry key="html" value="text/html; charset=UTF-8"/>
-                <entry key="json" value="application/json; charset=UTF-8"/>
-                <entry key="xml" value="application/xml; charset=UTF-8"/>
-            </map>
-        </property>
-        <property name="viewResolvers">
-            <list>
-                <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-				   <property name="prefix" value="/WEB-INF/pages/"/>
-				   <property name="suffix" value=".jsp"/>
-			   </bean>
-            </list>
-        </property>
-    </bean>
-    
-    <!-- 静态文件映射 -->
-   	<mvc:resources location="/statics/" mapping="/statics/**"></mvc:resources>
-    
-	<!-- 配置文件上传支持的类 -->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="maxUploadSize" value="5000000000"/>
-		<property name="defaultEncoding" value="UTF-8"/>
+	<context:component-scan base-package="cn.clims" />
+
+
+	<!-- 配置多视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="favorParameter" value="true" /><!-- 根据参数值确定匹配的视图-favor -->
+		<property name="defaultContentType" value="text/html" /><!-- 默认展示视图类型 -->
+		<property name="mediaTypes">
+			<map>
+				<entry key="html" value="text/html; charset=UTF-8" />
+				<entry key="json" value="application/json; charset=UTF-8" />
+				<entry key="xml" value="application/xml; charset=UTF-8" />
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean
+					class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="prefix" value="/WEB-INF/pages/" />
+					<property name="suffix" value=".jsp" />
+				</bean>
+			</list>
+		</property>
 	</bean>
-	
+
+	<!-- 静态文件映射 -->
+	<mvc:resources location="/statics/" mapping="/statics/**"></mvc:resources>
+
+	<!-- 配置文件上传支持的类 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="5000000000" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+
 	<!-- 配置interceptors -->
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/backend/**"/>
+			<mvc:mapping path="/backend/**" />
 			<bean class="cn.clims.interceptor.SysInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>
-	
+
 </beans>   

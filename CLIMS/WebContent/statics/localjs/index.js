@@ -2,24 +2,21 @@ $("#loginBtn").click(function(){
 	var user = new Object();
 	user.userCode = $.trim($("#userCode").val());
     user.userPassword = $.trim($("#userPassword").val());
-    
     if(user.userCode == "" || user.userCode == null){
     	$("#userCode").focus();
     	$("#formtip").css("color","red");
-    	$("#formtip").html("对不起，登录账号不能为空。");
+    	$("#formtip").html("账号不能为空。");
     }else if(user.userPassword == "" || user.userPassword == null){
     	$("#userPassword").focus();
     	$("#formtip").css("color","red");
-    	$("#formtip").html("对不起，登录密码不能为空。");
+    	$("#formtip").html("密码不能为空。");
     }else{
     	$("#formtip").html("");
-//    	alert(JSON.stringify(user));
     	$.ajax({
     		type:'POST',
     		url:'/login.html',
     		data:{user:JSON.stringify(user)},
     		dataType:'html',
-    		timeout:1000,
     		error:function(){
     			$("#formtip").css("color","red");
     	    	$("#formtip").html("登录失败！请重试。");
@@ -46,9 +43,6 @@ $("#loginBtn").click(function(){
         	    	$("#formtip").html("登录失败，未知原因!");
     			}
     		}
-    		
     	});
-    	
     }
-	
 });

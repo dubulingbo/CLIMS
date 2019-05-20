@@ -1,5 +1,7 @@
 package cn.clims.pojo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -13,13 +15,16 @@ public class Instrument extends Base {
 	private String instrumentName; //仪器名称     --主键1
 	private String instrumentNo;   //仪器编号
 	private String instrumentType; //仪器型号     --主键2
-	private Integer classNo;  //类别号
-	private Double price; //单价
-	private String manufacturer;  //生产商
-	private Date productionDate; //生产日期
-	private String country;      //国别
-	private Integer number; //总数量=库存+报废+调拨
-	private String note;  //备注
+	private Integer classNo;       //类别号
+	private Double price;          //单价
+	private String manufacturer;   //生产商
+	private Date productionDate;   //生产日期
+	private String country;        //国别
+	private Integer warranty;      //保修期  单位：月
+	private Integer number;        //总数量=库存+报废+调拨
+	private String maintainable;   //是否可维修   yes--可以   no--不可以
+	private Date purchaseDate;     //购买日期
+	private String note;           //备注
 	
 	
 	private Integer createdBy;
@@ -33,6 +38,7 @@ public class Instrument extends Base {
 	
 
 	private String className;  //类别名称
+	private String statusName;  //仪器状态名称
 	
 	//实现按价格范围查询
 	private Double lowPrice;
@@ -42,7 +48,35 @@ public class Instrument extends Base {
 	private Date startDate;
 	private Date endDate;
 	
+	private Date checkDate; //审核时间
 	
+	private String locName;  //所在地名称（实验室/房间号）
+    
+	public Date getExpireDate() {
+		if(this.purchaseDate == null){
+			return new Date();
+		}
+		Date expireDate = null;
+		String pur = new SimpleDateFormat("yyyy-MM-dd").format(this.purchaseDate);
+		String purStr[] = pur.split("-");
+		int year = Integer.valueOf(purStr[0]);
+		int month = Integer.valueOf(purStr[1]);
+		int zeng = month + this.warranty;
+		String monthString = "";
+		if(zeng%12 == 0) monthString = new Integer(12).toString();
+		else if(zeng%12 < 10)monthString = "0"+zeng%12;
+		else monthString = ""+zeng;
+		
+		String yearString = ""+(year+(zeng/12));
+		try {
+			expireDate = new SimpleDateFormat("yyyy-MM-dd").parse(yearString+"-"+monthString+"-"+purStr[2]);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return expireDate;
+	}
+	
+
 	public String getInstrumentName() {
 		return instrumentName;
 	}
@@ -163,6 +197,48 @@ public class Instrument extends Base {
 	public void setCreatedByName(String createdByName) {
 		this.createdByName = createdByName;
 	}
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+	public Integer getWarranty() {
+		return warranty;
+	}
+	public void setWarranty(Integer warranty) {
+		this.warranty = warranty;
+	}
+	public String getMaintainable() {
+		return maintainable;
+	}
+	public void setMaintainable(String maintainable) {
+		this.maintainable = maintainable;
+	}
+	public Date getPurchaseDate() {
+		return purchaseDate;
+	}
+	public void setPurchaseDate(Date purchaseDate) {
+		this.purchaseDate = purchaseDate;
+	}
+
+
+	public Date getCheckDate() {
+		return checkDate;
+	}
+
+
+	public void setCheckDate(Date checkDate) {
+		this.checkDate = checkDate;
+	}
 	
+	public String getLocName() {
+		return locName;
+	}
+
+
+	public void setLocName(String locName) {
+		this.locName = locName;
+	}
 	
 }

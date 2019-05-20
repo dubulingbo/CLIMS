@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,7 +23,7 @@ import net.sf.json.JSONObject;
 
 @Controller
 public class UserController extends BaseController {
-	private Logger logger = Logger.getLogger(UserController.class);
+	//private Logger logger = Logger.getLogger(UserController.class);
 	
 	@Resource
 	private UserService userService;
@@ -36,10 +35,10 @@ public class UserController extends BaseController {
 	 * @param userJson
 	 * @return
 	 */
-	@RequestMapping(value="/modifyPwd.html",method=RequestMethod.POST)
+	@RequestMapping(value="/backend/modifyPwd.html",method=RequestMethod.POST)
 	@ResponseBody
 	public Object modifyPassword(@RequestParam String userJson){
-		logger.debug("正在修改密码。。。");
+		System.out.println("正在修改密码。。。");
 		User sessionUser = this.getCurrentUser();
 		if(userJson == null || userJson.equals("")){
 			return "nodata";
@@ -72,27 +71,22 @@ public class UserController extends BaseController {
 	 * @param deptService 
 	 * @return
 	 */
-	@RequestMapping("/modifyInfo.html")
+	@RequestMapping(value="/backend/modifyInfo.html")
 	public ModelAndView modifyInfo(HttpSession session,Model model){
-		
-		logger.debug("进入完善个人信息页面========");
 		@SuppressWarnings("unchecked")
 		Map<String,Object> baseModel = (Map<String, Object>) session.getAttribute(Constants.SESSION_BASE_MODEL);
-		if(baseModel == null || getCurrentUser() == null){  //会话已关闭，请重新登录
-			return new ModelAndView("redirect:/");
-		}else{
-			try {
-				User user = new User();
-				user.setId(this.getCurrentUser().getId());
-				user = userService.getUserById(user);
-				model.addAllAttributes(baseModel);
-				model.addAttribute("deptList",deptService.getDeptList());
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-				return new ModelAndView("redirect:/");
-			}
+		
+		try {
+			System.out.println("即将修改的用户的ID为 : "+this.getCurrentUser().getId());
+			
+			//session.setAttribute(Constants.SESSION_BASE_MODEL, baseModel);
+			model.addAttribute("user", userService.getUserById(this.getCurrentUser()));
+			model.addAttribute("deptList",deptService.getDeptList());
+			model.addAllAttributes(baseModel);
 			return new ModelAndView("modifyInfo");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ModelAndView("redirect:/");
 		}
 	}
 	
@@ -102,33 +96,33 @@ public class UserController extends BaseController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value="/modifyInfoSave.html",method=RequestMethod.POST)
+	@RequestMapping(value="/backend/modifyInfoSave.html",method=RequestMethod.POST)
 	public ModelAndView modifyInfoSave(HttpSession session,@ModelAttribute("mUser") User mUser){
-		logger.debug("正在执行完善个人信息保存操作========");
-		if(session.getAttribute(Constants.SESSION_BASE_MODEL)==null || getCurrentUser() == null){
+		System.out.println("正在执行完善个人信息保存操作========");
+		try {
+			System.out.println("id:"+mUser.getId()+
+						 "\tuserCode:"+mUser.getUserCode()+
+						 "\tuserPassword:"+mUser.getUserPassword()+
+						 "\tuserName:"+mUser.getUserName()+
+						 "\tidCard:"+mUser.getIdCard()+
+						 "\tphone:"+mUser.getPhone());
+			//用户名、密码不能更新
+			mUser.setUserCode(null);
+			mUser.setUserPassword(null);
+			mUser.setModifyBy(this.getCurrentUser().getId());
+			mUser.setModifyDate(new Date());
+			userService.modifyUser(mUser);
+			
+			//更新session里的当前用户信息
+			session.setAttribute(Constants.CURRENT_USER, userService.getUserById(mUser));
+			
+			return new ModelAndView("redirect:/main.html");
+		} catch (Exception e) {
+			e.printStackTrace();
 			return new ModelAndView("redirect:/");
-		} else {
-			try {
-				logger.info("perfectUser======== user : "+mUser);
-				logger.info("id:"+mUser.getId()+
-							 "\tuserCode:"+mUser.getUserCode()+
-							 "\tuserPassword:"+mUser.getUserPassword()+
-							 "\tuserName:"+mUser.getUserName()+
-							 "\tidCard:"+mUser.getIdCard()+
-							 "\tphone:"+mUser.getPhone());
-				mUser.setUserCode(null);
-				mUser.setUserPassword(null);
-				mUser.setModifyBy(this.getCurrentUser().getId());
-				mUser.setModifyDate(new Date());
-				userService.modifyUser(mUser);
-	
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-				return new ModelAndView("redirect:/");
-			}
 		}
-		return new ModelAndView("redirect:/backend/admin/main.html");
 	}
+	
+	
 	
 }

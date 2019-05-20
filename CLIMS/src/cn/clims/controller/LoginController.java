@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +35,7 @@ import net.sf.json.JSONObject;
 @Controller
 public class LoginController extends BaseController{
 	
-	private Logger logger = Logger.getLogger(LoginController.class);
+//	private Logger logger = Logger.getLogger(LoginController.class);
 	
 	@Resource
 	private UserService userService;
@@ -55,21 +57,21 @@ public class LoginController extends BaseController{
 	@ResponseBody
 	public Object login(HttpSession session,@RequestParam String user){
 		if(user == null || user.equals("")){
-			logger.info("前端请求的数据为空！");
+			System.out.println("前端请求的数据为空！");
 			return "nodata";
 		}else{
 			try {
 				JSONObject userObject = JSONObject.fromObject(user);
 				@SuppressWarnings("static-access")
 				User userObj = (User)userObject.toBean(userObject,User.class);
-				logger.info("当前请求登录的用户名为："+userObj.getUserCode()+",密码为："+userObj.getUserPassword());
+				System.out.println("当前请求登录的用户名为："+userObj.getUserCode()+",密码为："+userObj.getUserPassword());
 				if(userService.userCodeIsExist(userObj) == 0){
 					return "nologincode";
 				}else{
 					User _user = userService.getLoginUser(userObj);
 					if(_user != null){
 						//当前用户存到session中
-						session.setAttribute(Constants.SESSION_USER, _user);
+						session.setAttribute(Constants.CURRENT_USER, _user);
 						return "success";
 					}else{
 						return "pwderror";
@@ -90,18 +92,15 @@ public class LoginController extends BaseController{
 	 */
 	@RequestMapping(value="/main.html")
 	public ModelAndView main(HttpSession session){
-		logger.info("进入主页！");
-		
-		
-		User user = this.getCurrentUser();
-		//Menu list
-		List<Menu> mList = null; 
-		
+		System.out.println("进入主页！");
+		User user = (User) session.getAttribute(Constants.CURRENT_USER);
 		
 		if(user != null){
 			
+			//Menu list
+			List<Menu> mList = null; 
 			Map<String,Object> model = new HashMap<String,Object>();
-			model.put("user", user);
+			
 			List<Affiche> afficheList = null;
 			afficheList = this.getAfficheList();
 			
@@ -116,14 +115,13 @@ public class LoginController extends BaseController{
 				//转化为json
 				if(mList != null){
 					String jsonString = JSONArray.fromObject(mList).toString();
-					logger.info("jsonString : "+jsonString);
+					System.out.println("jsonString : "+jsonString);
 					model.put("mList", jsonString);
 					redisAPI.set("menuList"+user.getUserRole(),40*60 ,jsonString);  //设置缓存时间为40分钟
 				}
-				
 			} else { //redis有数据,直接从redis缓存数据库里取出功能列表
 				String redisMenuListKeyString = redisAPI.get("menuList"+user.getUserRole());
-				logger.info("menuList from redis: "+redisMenuListKeyString);
+				System.out.println("menuList from redis: "+redisMenuListKeyString);
 				if(redisMenuListKeyString !=null && !redisMenuListKeyString.equals("")){
 					model.put("mList", redisMenuListKeyString);
 				}else{
@@ -192,7 +190,7 @@ public class LoginController extends BaseController{
 		try {
 			affList = afficheService.getPortalAfficheList(affiche);
 			/**
-			 * 接下来对title进行包装 
+			 * 接下来对content进行包装 
 			 * 申请调拨：publisher + 在(xxx-时间)前申请仪器调拨   ---xx年xx个月xx天前 / 刚刚
 			 * 审核仪器调拨：publisher + 审核了（xxx-申请人）的仪器调拨申请
 			 * 已调拨仪器：publisher + 已调拨（xxx-申请人）申请的仪器
@@ -223,13 +221,6 @@ public class LoginController extends BaseController{
 							}
 						}
 					}
-				}else if(aff.getCode() == Constants.AFFICHE_TYPE_2 ||
-						 aff.getCode() == Constants.AFFICHE_TYPE_3 ||
-						 aff.getCode() == Constants.AFFICHE_TYPE_4 ||
-						 aff.getCode() == Constants.AFFICHE_TYPE_5){
-					
-				}else{
-					logger.info("公告类型读取到其他类型！");
 				}
 			}
 		} catch (Exception e) {
@@ -263,13 +254,20 @@ public class LoginController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping("/logout.html")
-	public ModelAndView logout(HttpSession session){
-		session.removeAttribute(Constants.SESSION_USER);
+	public ModelAndView logout(HttpServletRequest request,HttpServletResponse response){
+		HttpSession session = request.getSession(false);
+		session.removeAttribute(Constants.CURRENT_USER);
 		session.removeAttribute(Constants.SESSION_BASE_MODEL);
-		
+//		session.setMaxInactiveInterval(1);
 		session.invalidate();
-		this.setCurrentUser(null);
-		return new ModelAndView("redirect:/");
+		try {
+			request.logout();
+			response.reset();
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ModelAndView("redirect:/index.html");
 		
 	}
 	
@@ -282,4 +280,15 @@ public class LoginController extends BaseController{
 	public ModelAndView noRole(){
 		return new ModelAndView("401");
 	}
+	
+	/**
+	 * 进入系统登录界面
+	 * @return
+	 */
+	@RequestMapping(value="/index.html")
+	public ModelAndView index(){
+		return new ModelAndView("index");
+	}
+	
+	
 }

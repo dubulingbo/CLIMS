@@ -4,8 +4,9 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class Affiche extends Base{
-	private Integer code;
+	private Integer typeId;
 	private String title;
+	private Integer code;
 	private String content;
 	private String publisher;
 	private Date publishDate;
@@ -15,6 +16,12 @@ public class Affiche extends Base{
 	
 	
 	
+	public Integer getTypeId() {
+		return typeId;
+	}
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
+	}
 	public Integer getCode() {
 		return code;
 	}

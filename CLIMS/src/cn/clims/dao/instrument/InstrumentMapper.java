@@ -12,41 +12,43 @@ import cn.clims.pojo.Instrument;
 
 public interface InstrumentMapper {
 	/**
-	 * 获取仪器列表（可用于分页）
-	 * @param instrument
+	 * 根据条件获取库存列表（可用于分页）
+	 * @param instStock
 	 * @return
 	 * @throws Exception
 	 */
-	public List<InstStock> getInstrumentList(InstStock instStock)throws Exception;
+	public List<InstStock> getInstStockList(InstStock instStock)throws Exception;
 	
 	/**
-	 * 获取仪器的总数量
-	 * @return
+	 * 根据条件获取库存列表总数量
+	 * @return int
 	 * @throws Exception
 	 */
-	public int count(InstStock instStock)throws Exception;
+	public int getInstStockCount(InstStock instStock)throws Exception;
 	
 	/**
-	 * 更新仪器表中的字段
-	 * @param instrument
-	 * @return
+	 * 更新库存表
+	 * @param instStock
+	 * @return int
 	 * @throws Exception
 	 */
 	public int updateInstStock(InstStock instStock)throws Exception;
 	
 	/**
-	 * 添加仪器信息
-	 * @param instrument
-	 * @return
+	 * 添加库存表 （添加仪器表clims_instrument && 添加库存表clims_instStock）
+	 * @param instStock
+	 * @return int
 	 * @throws Exception
 	 */
 	public int addInstrument(Instrument instrument)throws Exception;
+	public int addInstStock(InstStock instStock)throws Exception;
 
+	
 	public int instrumentNoIsExist(@Param("instrumentNo") String instrumentNo)throws Exception;
 
 	public InstStock getInstStockByInstId(@Param("instrumentId") Integer instrumentId)throws Exception;
 
-	public int instrumentNameIsExist(Instrument instrument)throws Exception;
+	public int instrumentIsExist(Instrument instrument)throws Exception;
 	
 	/**
 	 * 往调拨数据表中添加一条数据
@@ -78,5 +80,31 @@ public interface InstrumentMapper {
 
 	public InstAssign getInstAssignById(@Param("id") Integer h_id)throws Exception;
 
+	public int addInstRepair(InstRepair instRepair)throws Exception;
+
+	public InstRepair getInstRepairById(InstRepair instRepair)throws Exception;
+
+	public int updateInstRepair(InstRepair instRepair)throws Exception;
+
+	/**
+	 * 调拨编号是否存在（根据仪器存储编号instrumentId）
+	 * @param instAssign
+	 * @return
+	 * @throws Exception
+	 */
+	public int assignNoIsExist(InstAssign instAssign)throws Exception;
+
+	public InstAssign getInstAssignByInstId(InstAssign instAssign)throws Exception;
+
+	public int addInstAssign_all(InstAssign instAssign)throws Exception;
 	
+	public InstAssign assignIdIsExist(@Param(value = "assignId") String assignId)throws Exception;
+
+	public InstAssign getInstAssignByAssId(String assignId)throws Exception;
+
+	public int addInstScrap(InstScrap instScrap)throws Exception;
+
+	public InstScrap getInstScrapById(InstScrap instScrap)throws Exception;
+
+	public int updateInstScrap(InstScrap instScrap)throws Exception;
 }

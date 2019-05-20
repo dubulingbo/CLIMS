@@ -2,6 +2,7 @@ package cn.clims.tools;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 /**
  * MD5加密类：该类采用MD5对字符创加密，保护敏感信息
@@ -49,5 +50,8 @@ public class MD5 {
 		}
 //		System.out.println(resultString.length());
 		return resultString;
+	}
+	public static void main(String[] args) {
+		System.out.println(MD5.encrypt(String.valueOf(new Date().getTime())).toUpperCase().substring(26));
 	}
 }

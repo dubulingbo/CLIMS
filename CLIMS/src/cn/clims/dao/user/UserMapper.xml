@@ -4,11 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.clims.dao.user.UserMapper">
 	<select id="getLoginUser" resultType="user" parameterType="user">
-		select u.*,(select roleName from clims_role where id = u.userRole) as userRoleName
+		select u.*,
+		(select roleName from clims_role where id = u.userRole) as userRoleName
 		from clims_user u
 		where u.userCode=#{userCode} and u.userPassword=#{userPassword}
 	</select>
-	
+
 	<select id="userCodeIsExist" parameterType="user" resultType="int">
 		select count(1) from clims_user
 		<trim prefix="where" prefixOverrides="and | or">
@@ -20,80 +21,80 @@
 			</if>
 		</trim>
 	</select>
-	
-	
+
+
 	<update id="modifyUser" parameterType="user">
-		update clims_user 
-			<set>
-				<if test="userCode != null and userCode != ''">userCode = #{userCode},</if>
-				<if test="userPassword != null and userPassword != ''">userPassword = #{userPassword},</if>
-				<if test="userName != null and userName != ''">userName = #{userName},</if>
-				<if test="gender != null">gender = #{gender},</if>
-				<if test="userRole != null">userRole = #{userRole},</if>
-				<if test="number != null and number != ''">number = #{number},</if>
-				<if test="idCard != null and idCard != ''">idCard = #{idCard},</if>
-				<if test="email != null and email != ''">email = #{email},</if>
-				<if test="phone != null and phone != ''">phone = #{phone},</if>
-				<if test="dept != null and dept != ''">dept = #{dept},</if>
-				<if test="createdBy != null">createdBy = #{createdBy},</if>
-				<if test="creationDate != null">creationDate = #{creationDate},</if>
-				<if test="modifyBy != null">modifyBy = #{modifyBy},</if>
-				<if test="modifyDate != null">modifyDate = #{modifyDate},</if>
-			</set>
-			where id = #{id}
+		update clims_user
+		<set>
+			<if test="userCode != null and userCode != ''">userCode = #{userCode},</if>
+			<if test="userPassword != null and userPassword != ''">userPassword = #{userPassword},</if>
+			<if test="userName != null and userName != ''">userName = #{userName},</if>
+			<if test="gender != null">gender = #{gender},</if>
+			<if test="userRole != null">userRole = #{userRole},</if>
+			<if test="number != null and number != ''">number = #{number},</if>
+			<if test="idCard != null and idCard != ''">idCard = #{idCard},</if>
+			<if test="email != null and email != ''">email = #{email},</if>
+			<if test="phone != null and phone != ''">phone = #{phone},</if>
+			<if test="dept != null and dept != ''">dept = #{dept},</if>
+			<if test="createdBy != null">createdBy = #{createdBy},</if>
+			<if test="creationDate != null">creationDate = #{creationDate},</if>
+			<if test="modifyBy != null">modifyBy = #{modifyBy},</if>
+			<if test="modifyDate != null">modifyDate = #{modifyDate},</if>
+		</set>
+		where id = #{id}
 	</update>
-	
-	
+
+
 	<select id="getUserCount" resultType="int" parameterType="user">
 		select count(1) from clims_user
-			<trim prefix="where" prefixOverrides="and | or">
-				<if test="userName != null">
-					and userName like CONCAT('%',#{userName},'%')
-				</if>
-				<if test="userCode != null">
-					and userCode like CONCAT('%',#{userCode},'%')
-				</if>
-				<if test="userRole != null">
-					and userRole = #{userRole}
-				</if>
-			</trim>
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="userName != null">
+				and userName like CONCAT('%',#{userName},'%')
+			</if>
+			<if test="userCode != null">
+				and userCode like CONCAT('%',#{userCode},'%')
+			</if>
+			<if test="userRole != null">
+				and userRole = #{userRole}
+			</if>
+		</trim>
 	</select>
-	
+
 	<select id="getUserList" resultType="user" parameterType="user">
-		select u.*,(select roleName from clims_role where id = u.userRole) as userRoleName
+		select u.*,
+		(select roleName from clims_role where id = u.userRole) as userRoleName
 		from clims_user u
-			<trim prefix="where" prefixOverrides="and | or">
-				<if test="userName != null">
-					and u.userName like CONCAT('%',#{userName},'%')
-				</if>
-				<if test="userCode != null">
-					and u.userCode like CONCAT('%',#{userCode},'%')
-				</if>
-				<if test="userRole != null">
-					and u.userRole = #{userRole}
-				</if>
-			</trim>
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="userName != null">
+				and u.userName like CONCAT('%',#{userName},'%')
+			</if>
+			<if test="userCode != null">
+				and u.userCode like CONCAT('%',#{userCode},'%')
+			</if>
+			<if test="userRole != null">
+				and u.userRole = #{userRole}
+			</if>
+		</trim>
 		order by u.creationDate DESC limit #{startPageNo},#{pageSize}
 	</select>
-	
-	
+
+
 	<insert id="addUser" parameterType="user">
-		insert into 
-			clims_user(userCode,userPassword,userName,
-					   gender,userRole,dept,
-					   createdBy,creationDate)
-			values(#{userCode},#{userPassword},#{userName},
-				   #{gender},#{userRole},#{dept},
-				   #{createdBy},#{creationDate})
+		insert into
+		clims_user(userCode,userPassword,userName,locNo
+				   gender,userRole,dept,createdBy,creationDate)
+		values(#{userCode},#{userPassword},#{userName},#{locNo}
+			   #{gender},#{userRole},#{dept},#{createdBy},#{creationDate})
 	</insert>
-	
+
 	<select id="getUserById" parameterType="user" resultType="user">
-		select u.*,(select roleName from clims_role where id = u.userRole) as userRoleName
-		from clims_user u 
-		where u.id = #{id}
+		select u.*,
+		(select roleName from clims_role where id = u.userRole) as userRoleName,
+		(select locName from clims_location where id=u.locNo) as locName
+		from clims_user u where u.id = #{id}
 	</select>
-	
-	
+
+
 	<delete id="deleteUser" parameterType="user">
 		delete from clims_user where id = #{id}
 	</delete>

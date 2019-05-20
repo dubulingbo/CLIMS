@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.InitBinder;
-import org.apache.log4j.Logger;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,29 +20,22 @@ import cn.clims.tools.Constants;
 
 
 public class BaseController {
-	
-	private Logger logger = Logger.getLogger(BaseController.class);
-	
 	//抽取当前用户
 	private User currentUser;
 	
 	
 	public User getCurrentUser(){
-		if(this.currentUser == null){
-			HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-			HttpSession session = request.getSession(false);
-			if(session != null){
-				try {
-					currentUser = (User) session.getAttribute(Constants.SESSION_USER);
-					logger.debug("当前用户为："+currentUser.getUserCode());
-				} catch (Exception e) {
-					e.printStackTrace();
-					currentUser = null;
-				}
-			} else {
-				currentUser = null;
-			}
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		HttpSession session = request.getSession(false);
+		if(null != session){
+			currentUser = (User)session.getAttribute(Constants.CURRENT_USER);
+			System.out.println("================from RequestContextHolder===当前用户的userCode = "
+					+currentUser.getUserCode()+"\t userName = "+currentUser.getUserName());
+		}else {
+			currentUser = null;
 		}
+//		}else System.out.println("=================当前用户的userCode = "
+//				+currentUser.getUserCode()+"\t userName = "+currentUser.getUserName());
 		return currentUser;
 	}
 
@@ -60,7 +52,7 @@ public class BaseController {
 			@Override
 			public void setAsText(String value){
 				try {
-					setValue(new SimpleDateFormat("yyyy-MM-dd").parse(value));
+					setValue(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -69,7 +61,7 @@ public class BaseController {
 			}
 			@Override
 			public String getAsText() {
-				return new SimpleDateFormat("yyyy-MM-dd").format((Date)getValue());
+				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((Date)getValue());
 			}
 		});
 	}

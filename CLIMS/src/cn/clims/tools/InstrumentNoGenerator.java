@@ -1,5 +1,7 @@
 package cn.clims.tools;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -17,7 +19,7 @@ public class InstrumentNoGenerator {
 				                           'P','Q','R','S','T',
 				                           'U','V','W','X','Y','Z'};
 	//生成3位随机数字
-	public static String generate3Number(){
+	private static String generate3Number(){
 		String code="";
 		int num[]=new int[3];
 		int c=0;
@@ -39,16 +41,34 @@ public class InstrumentNoGenerator {
 	}
 	
 	//出厂年份+三位随机数字+(创建者ID+类别号)%36
-	public static String generate(String year,Integer createdBy,Integer classNo)throws Exception{
+	public static String generateStockNo(String year,Integer createdBy,Integer classNo)throws Exception{
 		String res = year;
 		res += generate3Number();
 		res += IDARRAY[(createdBy+classNo)%36];
 		return res;
 	}
 	
+	/**
+	 * 学院编号（deptNo） - 签收日期（年月日yyyyMMdd） - MD5码最后7位    - 仪器库存Id(instrumentId)
+	 */
+	public static String generateAssignNo(Integer deptNo, Integer instStockId){
+		StringBuilder sb = new StringBuilder();
+		sb.append(deptNo);
+		sb.append("-");
+		Date cur = new Date();
+		sb.append(new SimpleDateFormat("yyyyMMdd").format(cur));
+		sb.append("-");
+		String md5 = MD5.encrypt(String.valueOf(cur.getTime())).toUpperCase();
+		sb.append(md5.substring(md5.length()-7));
+		sb.append("-");
+		sb.append(instStockId);
+		return sb.toString();
+	}
+	
 	public static void main(String[] args) {
 		try {
-			System.out.println(InstrumentNoGenerator.generate("1997",1,8));
+			System.out.println(InstrumentNoGenerator.generateStockNo("1997",1,8));
+			System.out.println(InstrumentNoGenerator.generateAssignNo(1, 1));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

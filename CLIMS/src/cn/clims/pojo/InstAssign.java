@@ -2,15 +2,30 @@ package cn.clims.pojo;
 
 @SuppressWarnings("serial")
 public class InstAssign extends Instrument {
+	private String assignNo;   //调拨仪器之后的编号
 	private Integer instrumentId;
 	private String dept;
 	private Integer locNo;
 	private Integer assignNumber;
-	private String assignManager;
+	private Integer assignManagerId;
 	private String managerTel;
 	private Integer status;
+	private Integer opacifyToAdmin;
 	
 	
+	
+	private String assignManager;  //院系管理员的姓名
+	
+	private String reason;  //用来记录拒绝的原因
+	
+	private Integer partitionNo;
+	
+	public String getAssignNo() {
+		return assignNo;
+	}
+	public void setAssignNo(String assignNo) {
+		this.assignNo = assignNo;
+	}
 	public Integer getInstrumentId() {
 		return instrumentId;
 	}
@@ -48,10 +63,35 @@ public class InstAssign extends Instrument {
 	public void setAssignManager(String assignManager) {
 		this.assignManager = assignManager;
 	}
+	public Integer getAssignManagerId() {
+		return assignManagerId;
+	}
+	public void setAssignManagerId(Integer assignManagerId) {
+		this.assignManagerId = assignManagerId;
+	}
 	public String getManagerTel() {
 		return managerTel;
 	}
 	public void setManagerTel(String managerTel) {
 		this.managerTel = managerTel;
 	}
+	public Integer getOpacifyToAdmin() {
+		return opacifyToAdmin;
+	}
+	public void setOpacifyToAdmin(Integer opacifyToAdmin) {
+		this.opacifyToAdmin = opacifyToAdmin;
+	}
+	public String getReason() {
+		return reason;
+	}
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	public Integer getPartitionNo() {
+		return partitionNo;
+	}
+	public void setPartitionNo(Integer partitionNo) {
+		this.partitionNo = partitionNo;
+	}
+	
 }

@@ -4,7 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.clims.dao.country.CountryMapper">
 	<select id="getCountryList" resultType="country">
-		select * from clims_country
+		select * from
+		clims_country
 	</select>
 
 </mapper>

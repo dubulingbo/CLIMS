@@ -1,13 +1,10 @@
-
-
-
-.unInput,#userName,#number,#email,#phone,#idCard{
-	font-size:18px;
-	width:300px;
+.unInput, #userName, #number, #email, #phone, #idCard {
+	font-size: 18px;
+	width: 300px;
 }
-		
-.t_userName,.t_number,.t_email,.t_idCard,.t_phone{
-	color:blue;
-	font-weight:bold;
-	font-size:8px;
+
+.t_userName, .t_number, .t_email, .t_idCard, .t_phone {
+	color: blue;
+	font-weight: bold;
+	font-size: 8px;
 }

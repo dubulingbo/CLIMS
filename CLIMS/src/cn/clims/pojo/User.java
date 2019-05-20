@@ -1,6 +1,8 @@
 package cn.clims.pojo;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class User extends Base {
@@ -21,9 +23,14 @@ public class User extends Base {
 	private String idCard;
 	private String number; //学号
 	private Integer isPerfect;
-	
+	private Integer locNo;
 	
 	private String userRoleName;
+	private String locName;
+	
+	
+	//用来存放维修图片的的相对路径
+	List<String> repairImgList = new ArrayList<>();
 	
 	
 	public String getUserCode() {
@@ -128,6 +135,22 @@ public class User extends Base {
 	public void setUserRoleName(String userRoleName) {
 		this.userRoleName = userRoleName;
 	}
+	public String getLocName() {
+		return locName;
+	}
+	public void setLocName(String locName) {
+		this.locName = locName;
+	}
+	public List<String> getRepairImgList() {
+		return repairImgList;
+	}
+	public Integer getLocNo() {
+		return locNo;
+	}
+	public void setLocNo(Integer locNo) {
+		this.locNo = locNo;
+	}
+	
 	
 	
 }
