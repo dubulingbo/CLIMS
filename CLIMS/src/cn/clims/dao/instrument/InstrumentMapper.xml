@@ -8,8 +8,7 @@
 		select count(1) from clims_instrument where instrumentNo = #{instrumentNo}
 	</select>
 
-	<select id="instrumentIsExist" parameterType="instrument"
-		resultType="int">
+	<select id="instrumentIsExist" parameterType="instrument" resultType="int">
 		select count(1) from clims_instrument where instrumentName
 		= #{instrumentName} and instrumentType = #{instrumentType}
 	</select>
@@ -90,11 +89,9 @@
 	</select>
 
 	<select id="getInstStockByInstId" parameterType="integer" resultType="instStock">
-		select
-		inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
+		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
 		(select speciesName from clims_species where id = ins.classNo) as
-		className,
-		ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,
+		className,ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,
 		(select locName from clims_location where id = inst.locNo) as locName
 		from clims_instStock inst,clims_instrument ins
 		where inst.instrumentId = ins.id and inst.instrumentId = #{instrumentId}
@@ -303,17 +300,13 @@
 			 #{managerTel},#{createdBy},#{checkDate},#{creationDate},#{status},#{opacifyToAdmin})
 	</insert>
 	
-	<select id="assignIdIsExist" parameterType="integer" resultType="integer">
-		select count(1) from clims_instAssign partition(p2)
-		where instrumentId = #{instrumentId}
-	</select>
 	
-	<select id="getInstAssignByInstId_p1" parameterType="integer" resultType="instAssign">
-		select * from clims_instAssign partition(p1) where instrumentId=#{instrumentId}			
-	</select>
 	
-	<select id="getInstAssignByInstId_p2" parameterType="integer" resultType="instAssign">
-		select * from clims_instAssign partition(p2) where instrumentId=#{instrumentId}
+	
+	
+	<select id="getInstAssignByInst_p2" parameterType="instAssign" resultType="instAssign">
+		select * from clims_instAssign partition(p2)
+		where instrumentId=#{instrumentId} and dept = #{dept}
 	</select>
 	<!-- Operation of clims_instAssign table ends -->
 
@@ -369,7 +362,7 @@
 		#{bookDate},#{applyPerson},#{applyPhone},
 		#{repairImgPath},#{createdBy},#{creationDate},#{status})
 	</insert>
-	<select id="getInstRepairById" parameterType="instRepair" resultType="instRepair">
+	<select id="getInstRepairById" parameterType="integer" resultType="instRepair">
 		select inst.*,ins.instrumentName,ins.instrumentNo,
 			   ins.instrumentType,ins.classNo,
 			   (select speciesName from clims_species where id = ins.classNo) as className,
@@ -420,7 +413,7 @@
 		</if>
 	</select>
 	
-	<select id="getInstScrapById" parameterType="instScrap" resultType="instScrap">
+	<select id="getInstScrapById" parameterType="integer" resultType="instScrap">
 		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
 		(select speciesName from clims_species where id = ins.classNo) as className,
 		ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,

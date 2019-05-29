@@ -107,7 +107,6 @@ public class InstrumentController extends BaseController{
 			}else{
 				page.setCurrentPageNo(1);
 			}
-				
 			
 			//设置当前页号，控制首尾页
 			if(page.getCurrentPageNo() <= 0){
@@ -800,7 +799,7 @@ public class InstrumentController extends BaseController{
 					case 3:case 4:
 						InstRepair instRepair = new InstRepair();
 						instRepair.setId(h_id);
-						instRepair = instrumentService.getInstRepairById(instRepair);
+						instRepair = instrumentService.getInstRepairById(instRepair.getId());
 						instRepair.setCheckDate(new Date());
 						user.setId(instRepair.getCreatedBy());
 						user = userService.getUserById(user);
@@ -815,7 +814,7 @@ public class InstrumentController extends BaseController{
 					case 5:case 6:
 						InstScrap instScrap = new InstScrap();
 						instScrap.setId(h_id);
-						instScrap = instrumentService.getInstScrapById(instScrap);
+						instScrap = instrumentService.getInstScrapById(instScrap.getId());
 						instScrap.setDealer(this.getCurrentUser().getUserName());
 						instScrap.setDealerTel(this.getCurrentUser().getPhone());
 						instScrap.setDealDate(new Date());
@@ -840,7 +839,7 @@ public class InstrumentController extends BaseController{
 					case 9:  //院系管理员确认已维修仪器
 						InstRepair instRepair1 = new InstRepair();
 						instRepair1.setId(h_id);
-						instRepair1 = instrumentService.getInstRepairById(instRepair1);
+						instRepair1 = instrumentService.getInstRepairById(instRepair1.getId());
 						user.setId(instRepair1.getCreatedBy());
 						user = userService.getUserById(user);
 						instRepair1.setCheckDate(new Date());
@@ -1015,14 +1014,14 @@ public class InstrumentController extends BaseController{
 			try {
 				InstRepair repair = new InstRepair();
 				repair.setId(Integer.valueOf(instId));
-				model.addAttribute("repairInfo",instrumentService.getInstRepairById(repair));
+				model.addAttribute("repairInfo",instrumentService.getInstRepairById(repair.getId()));
 			} catch (Exception e) {
 				e.printStackTrace();
 				response.setStatus(404);
 			}
 		}
 		//model.addAllAttributes(baseModel);
-		return new ModelAndView("template");
+		return new ModelAndView("backend/template");
 	}
 
 }

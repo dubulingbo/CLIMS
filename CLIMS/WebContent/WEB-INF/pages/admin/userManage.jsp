@@ -273,5 +273,4 @@
 <!-- 这里编辑页面要展示的内容  ends -->
 <%@include file="/WEB-INF/pages/common/foot.jsp"%>
 
-<script type="text/javascript"
-	src="${pageContext.request.contextPath }/statics/localjs/userManage.js"></script>
+<script type="text/javascript" src="/statics/localjs/userManage.js"></script>

@@ -95,7 +95,7 @@ public class UserController extends BaseController {
 			model.addAttribute("user", userService.getUserById(this.getCurrentUser()));
 			model.addAttribute("deptList",deptService.getDeptList());
 			model.addAllAttributes(baseModel);
-			return new ModelAndView("modifyInfo");
+			return new ModelAndView("backend/modifyInfo");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ModelAndView("redirect:/");
@@ -215,7 +215,7 @@ public class UserController extends BaseController {
 			}	
 			model.addAllAttributes(baseModel);
 			model.addAttribute("page", page);
-			return new ModelAndView("template");
+			return new ModelAndView("backend/template");
 		}
 	}
 

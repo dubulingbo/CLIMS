@@ -24,19 +24,32 @@ import cn.clims.tools.InstrumentNoGenerator;
 
 @Service("instrumentService")
 public class InstrumentServiceImpl implements InstrumentService {
-	
 	@Resource
 	private InstrumentMapper instrumentMapper;
-	
 	@Resource 
 	private MailService mailService;
-	
 	@Resource
 	private AfficheMapper afficheMapper;
-	
 	@Resource
 	private DeptMapper deptMapper;
-
+	
+	private String getCurrentDate(String format){
+		return new SimpleDateFormat(format).format(new Date()).toString();
+	}
+	
+	
+	
+	
+	@Override
+	public int instrumentNoIsExist(String instrumentNo) throws Exception {
+		return instrumentMapper.instrumentNoIsExist(instrumentNo);
+	}
+	
+	@Override
+	public int instrumentIsExist(Instrument instrument) throws Exception {
+		return instrumentMapper.instrumentIsExist(instrument);
+	}
+	
 	@Override
 	public List<InstStock> getInstStockList(InstStock instStock) throws Exception {
 		return instrumentMapper.getInstStockList(instStock);
@@ -46,12 +59,17 @@ public class InstrumentServiceImpl implements InstrumentService {
 	public int getInstStockCount(InstStock instStock) throws Exception {
 		return instrumentMapper.getInstStockCount(instStock);
 	}
-
+	
+	@Override
+	public InstStock getInstStockByInstId(Integer instrumentId) throws Exception {
+		return instrumentMapper.getInstStockByInstId(instrumentId);
+	}
+	
 	@Override
 	public int updateInstStock(InstStock instStock) throws Exception {
 		return instrumentMapper.updateInstStock(instStock);
 	}
-
+	
 	@Override
 	public void cl_addInstStock(InstStock instStock) throws Exception {
 		/**
@@ -60,24 +78,44 @@ public class InstrumentServiceImpl implements InstrumentService {
 		 */
 		instrumentMapper.addInstrument(instStock);
 		instrumentMapper.addInstStock(instStock);
-		
 	}
-
+	
+	
+	
+	
+	
+	
+	
 	@Override
-	public int instrumentNoIsExist(String instrumentNo) throws Exception {
-		return instrumentMapper.instrumentNoIsExist(instrumentNo);
+	public List<InstAssign> getInstAssignList_p1(InstAssign assign) throws Exception {
+		return instrumentMapper.getInstAssignList_p1(assign);
 	}
-
+	
 	@Override
-	public InstStock getInstStockByInstId(Integer instrumentId) throws Exception {
-		return instrumentMapper.getInstStockByInstId(instrumentId);
+	public List<InstAssign> getInstAssignList_p2(InstAssign assign) throws Exception {
+		return instrumentMapper.getInstAssignList_p2(assign);
 	}
-
+	
 	@Override
-	public int instrumentIsExist(Instrument instrument) throws Exception {
-		return instrumentMapper.instrumentIsExist(instrument);
+	public int getInstAssignCount_p1(InstAssign assign) throws Exception {
+		return instrumentMapper.getInstAssignCount_p1(assign);
 	}
-
+	
+	@Override
+	public int getInstAssignCount_p2(InstAssign assign) throws Exception {
+		return instrumentMapper.getInstAssignCount_p2(assign);
+	}
+	
+	@Override
+	public InstAssign getInstAssignById(Integer h_id) throws Exception {
+		return instrumentMapper.getInstAssignById(h_id);
+	}
+	
+	@Override
+	public InstAssign getInstAssignByAssignNo(String assignNo)throws Exception {
+		return instrumentMapper.getInstAssignByAssignNo(assignNo);
+	}
+	
 	@Override
 	public void cl_addInstAssign(InstAssign instAssign,Affiche affiche)throws Exception {
 		//1.添加到系统公告
@@ -93,35 +131,56 @@ public class InstrumentServiceImpl implements InstrumentService {
 			throw new Exception("要调拨的数量大于库存数量！");
 		}
 	}
-
-	@Override
-	public List<InstAssign> getInstAssignList(InstAssign assign) throws Exception {
-		return instrumentMapper.getInstAssignList_p1(assign);
-	}
 	
+	
+	
+	
+	
+	
+	
+
 	@Override
 	public List<InstRepair> getInstRepairList(InstRepair repair) throws Exception {
 		return instrumentMapper.getInstRepairList(repair);
 	}
 
 	@Override
-	public List<InstScrap> getInstScrapList(InstScrap scrap) throws Exception {
-		return instrumentMapper.getInstScrapList(scrap);
-	}
-
-	@Override
-	public InstAssign getInstAssignById(Integer h_id) throws Exception {
-		return instrumentMapper.getInstAssignById(h_id);
-	}
-
-	@Override
-	public int getInstAssignCount(InstAssign assign) throws Exception {
-		return instrumentMapper.getInstAssignCount(assign);
-	}
-
-	@Override
 	public int getInstRepairCount(InstRepair repair) throws Exception {
 		return instrumentMapper.getInstRepairCount(repair);
+	}
+	
+	@Override
+	public List<InstRepair> cl_addInstRepair(InstRepair instRepair, Affiche affiche) throws Exception {
+		//1.添加到系统公告
+		afficheMapper.addAffiche(affiche);
+		//2.修改仪器调拨表下的仪器状态
+		InstAssign ass = instrumentMapper.getInstAssignById(instRepair.getAssId());
+		ass.setStatus(Constants.INSTRUMENT_STATUS_9);  //将调拨表中的该仪器设置成维修中
+		instrumentMapper.updateInstAssign(ass);
+		//3.添加仪器维修表
+		instRepair.setAssignId(ass.getAssignNo());
+		instrumentMapper.addInstRepair(instRepair);
+		//获取当前用户全部的维修记录
+		InstRepair repair = new InstRepair();
+		repair.setCreatedBy(instRepair.getCreatedBy());
+		return instrumentMapper.getInstRepairList(repair);
+	}
+
+	@Override
+	public InstRepair getInstRepairById(Integer id) throws Exception {
+		return instrumentMapper.getInstRepairById(id);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public List<InstScrap> getInstScrapList(InstScrap scrap) throws Exception {
+		return instrumentMapper.getInstScrapList(scrap);
 	}
 
 	@Override
@@ -129,11 +188,28 @@ public class InstrumentServiceImpl implements InstrumentService {
 		return instrumentMapper.getInstScrapCount(scrap);
 	}
 	
-	private String getCurrentDate(){
-		String cDate = "";
-		cDate = new SimpleDateFormat("yyyy-M-d").format(new Date()).toString();
-		return cDate;
+	@Override
+	public InstScrap getInstScrapById(Integer id) throws Exception {
+		return instrumentMapper.getInstScrapById(id);
 	}
+	
+	@Override
+	public void cl_addInstScrap(InstScrap instScrap, Affiche affiche) throws Exception {
+		InstAssign assign = instrumentMapper.getInstAssignByAssignNo(instScrap.getAssignId());
+		instScrap.setInstrumentId(assign.getInstrumentId());
+		instScrap.setDept(assign.getDept());
+		instScrap.setCreatedBy(assign.getCreatedBy());
+		instScrap.setCreationDate(new Date());
+		instScrap.setAddress(assign.getLocName());
+		instScrap.setStatus(Constants.INSTRUMENT_STATUS_12);
+		afficheMapper.addAffiche(affiche);
+		instrumentMapper.addInstScrap(instScrap);
+	}
+	
+	
+	
+	
+	
 
 	@Override
 	public void cl_instApplyHandle(InstAssign instAssign, InstRepair instRepair, InstScrap instScrap, User user,
@@ -144,7 +220,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 				affiche.setCode(Constants.INSTRUMENT_STATUS_2);
 				affiche.setTypeId(Constants.AFFICHE_TYPE_1);
 				affiche.setTitle("已审核仪器调拨");
-				affiche.setContent(instAssign.getAssignManager()+"于"+getCurrentDate()+"已审核 "+user.getUserName()+" 申请的仪器调拨.");
+				affiche.setContent(instAssign.getAssignManager()+"于"+getCurrentDate("yyyy-M-d")+"已审核 "+user.getUserName()+" 申请的仪器调拨.");
 				afficheMapper.addAffiche(affiche);
 				//修改仪器调拨表
 				instAssign.setStatus(Constants.INSTRUMENT_STATUS_2); //设置为 审核通过 状态
@@ -170,7 +246,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 					affiche.setCode(Constants.INSTRUMENT_STATUS_3);
 					affiche.setTypeId(Constants.AFFICHE_TYPE_1);
 					affiche.setTitle("仪器调拨审核未通过");
-					affiche.setContent(instAssign.getAssignManager()+"于"+getCurrentDate()+"已拒绝 "+user.getUserName()+" 申请的仪器调拨.");
+					affiche.setContent(instAssign.getAssignManager()+"于"+getCurrentDate("yyyy-M-d")+"已拒绝 "+user.getUserName()+" 申请的仪器调拨.");
 					afficheMapper.addAffiche(affiche);
 					//更新仪器调拨表中的状态
 					instAssign.setStatus(Constants.INSTRUMENT_STATUS_3);  //设置为 拒绝调拨 状态
@@ -212,7 +288,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 //						"】审核未通过！请仔细检查申请资料的完整性，谢谢！（本通知由系统自动发出，请勿回复）");
 				break;
 			case 5:  //院系管理员同意报废操作
-				InstAssign assign = instrumentMapper.getInstAssignByAssId(instScrap.getAssignId());
+				InstAssign assign = instrumentMapper.getInstAssignByAssignNo(instScrap.getAssignId());
 				int assignN = assign.getAssignNumber() - instScrap.getScrapNumber();
 				if(assignN >= 0){
 					throw new Exception("要报废的数量大于调拨库存的数量！");
@@ -221,7 +297,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 					affiche.setCode(Constants.INSTRUMENT_STATUS_13);
 					affiche.setTypeId(Constants.AFFICHE_TYPE_3);
 					affiche.setTitle("仪器报废成功");
-					affiche.setContent("仪器【"+instScrap.getInstrumentName()+"】已于"+this.getCurrentDate()+"报废.");
+					affiche.setContent("仪器【"+instScrap.getInstrumentName()+"】已于"+getCurrentDate("yyyy-M-d")+"报废.");
 					afficheMapper.addAffiche(affiche);
 					
 					//2.跟新调拨库存数量
@@ -253,7 +329,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 				affiche.setTitle("派遣仪器");
 				affiche.setContent(user.getUserName()+"申请的仪器<a href='#' class='viewInstrument' id='"
 						+instAssign.getInstrumentId()+"'>【"+instAssign.getInstrumentName()+"】</a>已于"
-						+getCurrentDate()+"开始派遣.");
+						+getCurrentDate("yyyy-M-d")+"开始派遣.");
 				afficheMapper.addAffiche(affiche);
 				
 				//2.修改仪器调拨表
@@ -301,7 +377,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 				affiche.setCode(Constants.INSTRUMENT_STATUS_11);
 				affiche.setTypeId(Constants.AFFICHE_TYPE_2);
 				affiche.setTitle("仪器已维修");
-				affiche.setContent(user.getUserName()+"申请的仪器【"+instRepair.getInstrumentName()+"】于 "+getCurrentDate()+" 已维修完毕 .");
+				affiche.setContent(user.getUserName()+"申请的仪器【"+instRepair.getInstrumentName()+"】于 "+getCurrentDate("yyyy-M-d")+" 已维修完毕 .");
 				afficheMapper.addAffiche(affiche);
 				//2.更新维修表
 				instRepair.setStatus(Constants.INSTRUMENT_STATUS_11);
@@ -320,19 +396,19 @@ public class InstrumentServiceImpl implements InstrumentService {
 				instrumentMapper.updateInstAssign(instAssign);
 				
 				instAssign.setStatus(Constants.INSTRUMENT_STATUS_7);  //调整  仪器调拨库存区的仪器状态 为   使用中
-				if(instrumentMapper.assignNoIsExist(instAssign) == 0){ //不存在，插入仪器调拨库存记录
-					instAssign.setAssignNo(InstrumentNoGenerator.generateAssignNo(deptMapper.
-							getDnoByDname(instAssign.getDept()), instAssign.getInstrumentId()));  //生成仪器调拨库存编号
-					instrumentMapper.addInstAssign_all(instAssign);
+				
+				InstAssign instAss = instrumentMapper.getInstAssignByInst_p2(instAssign);
+				if(instAss == null){ //不存在，插入仪器调拨库存记录
+					instAssign.setAssignNo(InstrumentNoGenerator.generateAssignNo(
+							deptMapper.getDnoByDname(instAssign.getDept()), instAssign.getInstrumentId()));  //生成仪器调拨库存编号
+					instrumentMapper.addInstAssign(instAssign);
 				}else{  //存在，增加 assignNumber 的数量
-					Integer num = instAssign.getAssignNumber();
+					Integer num = instAss.getAssignNumber();
 					if(num > 0){
-						instAssign.setPartitionNo(2);
-						instAssign = instrumentMapper.getInstAssignByInstId(instAssign);
-						instAssign.setAssignNumber(instAssign.getAssignNumber() + num);
-						instrumentMapper.addInstAssign_all(instAssign);
+						instAss.setAssignNumber(instAss.getAssignNumber() + num);
+						instrumentMapper.addInstAssign(instAss);
 					}else{
-						throw new Exception("仪器调拨表里的调拨数量有无 instrumentId = "+instAssign.getId());
+						throw new Exception("仪器调拨表里的调拨数量有误 instrumentId = "+instAss.getId());
 					}
 				}
 				
@@ -349,56 +425,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 		}
 		
 	}
-
-	@Override
-	public List<InstRepair> cl_addInstRepair(InstRepair instRepair, Affiche affiche) throws Exception {
-		//1.添加到系统公告
-		afficheMapper.addAffiche(affiche);
-		//2.修改仪器调拨表下的仪器状态
-		InstAssign ass = instrumentMapper.getInstAssignById(instRepair.getAssId());
-		ass.setStatus(Constants.INSTRUMENT_STATUS_9);  //将调拨表中的该仪器设置成维修中
-		instrumentMapper.updateInstAssign(ass);
-		//3.添加仪器维修表
-		instRepair.setAssignId(ass.getAssignNo());
-		instrumentMapper.addInstRepair(instRepair);
-		//获取当前用户全部的维修记录
-		InstRepair repair = new InstRepair();
-		repair.setCreatedBy(instRepair.getCreatedBy());
-		return instrumentMapper.getInstRepairList(repair);
-	}
-
-
-
-	@Override
-	public InstRepair getInstRepairById(InstRepair instRepair) throws Exception {
-		return instrumentMapper.getInstRepairById(instRepair);
-	}
-
 	
-
-	@Override
-	public void cl_addInstScrap(InstScrap instScrap, Affiche affiche) throws Exception {
-		InstAssign assign = instrumentMapper.getInstAssignByAssId(instScrap.getAssignId());
-		instScrap.setInstrumentId(assign.getInstrumentId());
-		instScrap.setDept(assign.getDept());
-		instScrap.setCreatedBy(assign.getCreatedBy());
-		instScrap.setCreationDate(new Date());
-		instScrap.setAddress(assign.getLocName());
-		instScrap.setStatus(Constants.INSTRUMENT_STATUS_12);
-		afficheMapper.addAffiche(affiche);
-		instrumentMapper.addInstScrap(instScrap);
-	}
-
-	@Override
-	public InstAssign getInstAssignByAssId(String assignId)throws Exception {
-		return instrumentMapper.getInstAssignByAssId(assignId);
-	}
-
-	@Override
-	public InstScrap getInstScrapById(InstScrap instScrap) throws Exception {
-		return instrumentMapper.getInstScrapById(instScrap);
-	}
-
 	
 
 }

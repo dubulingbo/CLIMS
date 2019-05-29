@@ -27,7 +27,7 @@ public class Test {
 			InstAssign assign = new InstAssign();
 			assign.setStartPageNo(4);
 			assign.setPageSize(2);
-			List<InstAssign> instAssignList = instrumentService.getInstAssignList(assign);
+			List<InstAssign> instAssignList = instrumentService.getInstAssignList_p1(assign);
 			//所有有日期的属性，都要按照此日期格式进行json转换（对象转json）
 			JsonConfig jsonConfig = new JsonConfig();
 			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor("yyyy-MM-dd HH:mm:ss"));
