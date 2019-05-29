@@ -6,7 +6,7 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class InstRepair extends Instrument {
-	private Integer assignId;
+	private String assignId;   //仪器调拨库存编号
 	private Integer instrumentId;
 	private String dept;
 	private String address;
@@ -21,12 +21,14 @@ public class InstRepair extends Instrument {
 	private Integer isConfirm; //标志院系管理员是否能对本次维修进行确认，   默认为《两天后》开始确认
 	private List<Repairman> repairmanList; //用于前端显示，该仪器下的所有维修员信息
 	
+	private Integer assId;  //仪器调拨表的主键
+	
 	private List<String> rImgList;
 	
-	public Integer getAssignId() {
+	public String getAssignId() {
 		return assignId;
 	}
-	public void setAssignId(Integer assignId) {
+	public void setAssignId(String assignId) {
 		this.assignId = assignId;
 	}
 	public Integer getInstrumentId() {
@@ -129,6 +131,12 @@ public class InstRepair extends Instrument {
 		System.out.println(list.size());
 		for(String s : list)
 			System.out.println(s);
+	}
+	public Integer getAssId() {
+		return assId;
+	}
+	public void setAssId(Integer assId) {
+		this.assId = assId;
 	}
 	
 }

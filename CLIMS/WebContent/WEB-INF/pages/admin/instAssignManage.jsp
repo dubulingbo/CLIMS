@@ -28,6 +28,7 @@
 				<table class="table">
 					<thead>
 						<tr>
+							<th>编号</th>
 							<th>仪器名称</th>
 							<th>申请单位</th>
 							<th>申请数量</th>
@@ -40,29 +41,37 @@
 					<tbody>
 						<c:forEach items="${page.items }" var="inst">
 							<tr>
-								<td>${inst.instrumentName }</td>
-								<td>${inst.dept }</td>
-								<td style="padding-left: 30px;">${inst.assignNumber }</td>
-								<td><fmt:formatDate value="${inst.creationDate }"
-										pattern="yyyy-MM-dd HH:mm:ss" /></td>
-								<td><a href="#" class="viewUser"
-									id="${inst.assignManagerId }">${inst.assignManager }</a></td>
-								<td id="instAssignApplyStatus${inst.id }"><c:if
-										test="${inst.status == 2 }">
-										<span class="label label-warning">${inst.statusName }</span>
-									</c:if> <c:if test="${inst.status == 3 }">
-										<span class="label label-success">${inst.statusName }</span>
-									</c:if> <c:if test="${inst.status == 9 }">
-										<span class="label">${inst.statusName }</span>
-									</c:if> <c:if test="${inst.status == 11 }">
-										<span class="label label-important">${inst.statusName }</span>
-									</c:if></td>
-								<td style="width: 250px;"><input type="hidden"
-									value="${inst.status }" id="changeStatus${inst.id }">
-									<p class="btn-group" style="width: 240px; height: 10px;">
+								<td class="center">${inst.id }</td>
+								<td class="center">${inst.instrumentName }</td>
+								<td class="center">${inst.dept }</td>
+								<td class="center">${inst.assignNumber }</td>
+								<td class="center">
+									<fmt:formatDate value="${inst.creationDate }" pattern="yyyy-MM-dd HH:mm"/>
+								</td>
+								<td class="center">
+									<a href="javascript:void(0)" class="viewUser" id="${inst.assignManagerId }">${inst.assignManager }</a>
+								</td>
+								<td id="instAssignApplyStatus${inst.id }">
+									<c:if test="${inst.status == 2 }">
+										<span class="label label-warning">${inst.statusName}</span>
+									</c:if> 
+									<c:if test="${inst.status == 4 }">
+										<span class="label label-important">${inst.statusName}</span>
+									</c:if> 
+									<c:if test="${inst.status == 5 }">
+										<span class="label">${inst.statusName}</span>
+									</c:if> 
+									<c:if test="${inst.status == 6 }">
+										<span class="label label-success">${inst.statusName}</span>
+									</c:if>
+								</td>
+								<td style="width:250px;">
+									<input type="hidden" value="${inst.status }" id="changeStatus${inst.id }">
+									<p class="btn-group" style="width:240px; height:10px;">
 										<button class="btn agreeAssignCheck" id="${inst.id }">允许调拨</button>
 										<button class="btn refuseAssignCheck" id="${inst.id }">拒绝调拨</button>
-									</p></td>
+									</p>
+								</td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -73,7 +82,7 @@
 					<ul>
 						<c:choose>
 							<c:when test="${page.currentPageNo == 1}">
-								<li class="active"><a href="javascript:void();" title="首页">首页</a></li>
+								<li class="active"><a href="javascript:void(0)" title="首页">首页</a></li>
 							</c:when>
 							<c:otherwise>
 								<li><a href='instAssignManage.html?pageIndex=1' title="首页">首页</a></li>
@@ -81,18 +90,15 @@
 						</c:choose>
 						<c:if test="${page.prevPages != null}">
 							<c:forEach items="${page.prevPages}" var="num">
-								<li><a href='instAssignManage.html?pageIndex=${num }'
-									title="${num}">${num}</a></li>
+								<li><a href='instAssignManage.html?pageIndex=${num }' title="${num}">${num}</a></li>
 							</c:forEach>
 						</c:if>
 
-						<li class="active"><a href="#" title="${page.currentPageNo}">${page.currentPageNo}</a>
-						</li>
+						<li class="active"><a href="#" title="${page.currentPageNo}">${page.currentPageNo}</a></li>
 
 						<c:if test="${page.nextPages != null}">
 							<c:forEach items="${page.nextPages}" var="num">
-								<li><a href='instAssignManage.html?pageIndex=${num }'
-									title="${num}">${num}</a></li>
+								<li><a href='instAssignManage.html?pageIndex=${num }' title="${num}">${num}</a></li>
 							</c:forEach>
 						</c:if>
 
@@ -102,15 +108,13 @@
 									<li class="active"><a href="javascript:void();" title="尾页">尾页</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a
-										href='instAssignManage.html?pageIndex=${page.totalPageCount}'
-										title="尾页">尾页</a></li>
+									<li><a href='instAssignManage.html?pageIndex=${page.totalPageCount}' title="尾页">尾页</a></li>
 								</c:otherwise>
 							</c:choose>
 						</c:if>
 
 						<c:if test="${page.totalPageCount == null}">
-							<li class="active"><a href="javascript:void();" title="尾页">尾页</a></li>
+							<li class="active"><a href="javascript:void(0)" title="尾页">尾页</a></li>
 						</c:if>
 					</ul>
 				</div>
@@ -121,10 +125,8 @@
 		</div>
 
 
-	</div>
-	<!--/span-->
-</div>
-<!--/row-->
+	</div> <!--/span-->
+</div> <!--/row-->
 
 
 <!-- 操作弹出的提示弹出界面 start -->
@@ -138,12 +140,7 @@
 <!-- 操作弹出的提示弹出界面 end -->
 
 
-
-
-
 <!-- 这里编辑页面要展示的内容  ends -->
-
 <%@include file="/WEB-INF/pages/common/foot.jsp"%>
-<script type="text/javascript"
-	src="/statics/localjs/instAssignManage.js"></script>
+<script type="text/javascript" src="/statics/localjs/instAssignManage.js"></script>
 

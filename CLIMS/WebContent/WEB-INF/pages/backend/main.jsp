@@ -18,19 +18,7 @@
 	</ul>
 </div>
 
-<div class="sortable row-fluid">
-	<a data-rel="tooltip" title="6 new members."
-		class="well span3 top-block" href="#"> <span
-		class="icon32 icon-red icon-user"></span>
-		<div>系统用户量</div>
-		<div>507</div> <span class="notification">6</span>
-	</a> <a data-rel="tooltip" title="1231312312312 new messages."
-		class="well span3 top-block" href="#"> <span
-		class="icon32 icon-color icon-envelope-closed"></span>
-		<div>信息</div>
-		<div>23423423423423432</div> <span class="notification red">1231312312312</span>
-	</a>
-</div>
+
 
 
 <div class="row-fluid sortable">
@@ -39,11 +27,11 @@
 			<h2>
 				<i class="icon-bullhorn"></i>
 			</h2>
-			<div class="box-icon">
+			<!-- <div class="box-icon">
 				<a
 					style="display: block; width: 60px; padding-right: 1px; font-size: 14px;"
 					href="/informanage/portalafficheList.html">more >></a>
-			</div>
+			</div> -->
 		</div>
 		<div class="box-content">
 			<h1>
@@ -75,9 +63,7 @@
 				<i class="icon-envelope"></i>
 			</h2>
 			<div class="box-icon">
-				<a
-					style="display: block; width: 60px; padding-right: 1px; font-size: 14px;"
-					href="#">more >></a>
+				<a href="" target="_blank" style="display:block;width:60px;padding-right:1px;font-size:14px;">more >></a>
 			</div>
 		</div>
 		<div class="box-content">

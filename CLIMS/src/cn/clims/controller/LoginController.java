@@ -28,6 +28,7 @@ import cn.clims.service.affiche.AfficheService;
 import cn.clims.service.function.FunctionService;
 import cn.clims.service.user.UserService;
 import cn.clims.tools.Constants;
+import cn.clims.tools.MD5;
 import cn.clims.tools.RedisAPI;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -64,6 +65,7 @@ public class LoginController extends BaseController{
 				JSONObject userObject = JSONObject.fromObject(user);
 				@SuppressWarnings("static-access")
 				User userObj = (User)userObject.toBean(userObject,User.class);
+				userObj.setUserPassword(MD5.encrypt(userObj.getUserPassword()));
 				System.out.println("当前请求登录的用户名为："+userObj.getUserCode()+",密码为："+userObj.getUserPassword());
 				if(userService.userCodeIsExist(userObj) == 0){
 					return "nologincode";
@@ -149,7 +151,7 @@ public class LoginController extends BaseController{
 			model.put("afficheList", afficheList);
 			
 			session.setAttribute(Constants.SESSION_BASE_MODEL, model);
-			return new ModelAndView("main",model);
+			return new ModelAndView("backend/main",model);
 		}
 		return new ModelAndView("redirect:/");
 	}
@@ -278,14 +280,14 @@ public class LoginController extends BaseController{
 	 */
 	@RequestMapping(value="/401.html")
 	public ModelAndView noRole(){
-		return new ModelAndView("401");
+		return new ModelAndView("backend/401");
 	}
 	
 	/**
 	 * 进入系统登录界面
 	 * @return
 	 */
-	@RequestMapping(value="/index.html")
+	@RequestMapping(value={"/index.html","/ulogin.html"})
 	public ModelAndView index(){
 		return new ModelAndView("index");
 	}

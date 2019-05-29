@@ -96,7 +96,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 
 	@Override
 	public List<InstAssign> getInstAssignList(InstAssign assign) throws Exception {
-		return instrumentMapper.getInstAssignList(assign);
+		return instrumentMapper.getInstAssignList_p1(assign);
 	}
 	
 	@Override
@@ -153,10 +153,10 @@ public class InstrumentServiceImpl implements InstrumentService {
 				
 				
 				//向用户发邮件
-				mailService.sendMsg(user.getEmail(),
-								"你申请的仪器【"+instAssign.getInstrumentName()+
-								"】已由院系管理员【"+instAssign.getAssignManager()+
-								"】审核通过！请随时关注设备申请状态，谢谢！（本通知由系统自动发出，请勿回复）");
+//				mailService.sendMsg(user.getEmail(),
+//								"你申请的仪器【"+instAssign.getInstrumentName()+
+//								"】已由院系管理员【"+instAssign.getAssignManager()+
+//								"】审核通过！请随时关注设备申请状态，谢谢！（本通知由系统自动发出，请勿回复）");
 				break;
 			case 2:  //院系管理员拒绝调拨操作
 				InstStock st = instrumentMapper.getInstStockByInstId(instAssign.getInstrumentId());
@@ -177,9 +177,9 @@ public class InstrumentServiceImpl implements InstrumentService {
 					instAssign.setOpacifyToAdmin(Constants.OPACIFY_TO_ADMIN_1); //设置 对管理员可见  --1:不可见（默认），2:可见
 					instrumentMapper.updateInstAssign(instAssign);
 					//向用户发邮件
-					mailService.sendMsg(user.getEmail(),
-							"你申请的仪器【"+instAssign.getInstrumentName()+
-							"】审核未通过！具体详情请关注本网站最新公告或联系所在院系的仪器管理员，谢谢！（本通知由系统自动发出，请勿回复）");
+//					mailService.sendMsg(user.getEmail(),
+//							"你申请的仪器【"+instAssign.getInstrumentName()+
+//							"】审核未通过！具体详情请关注本网站最新公告或联系所在院系的仪器管理员，谢谢！（本通知由系统自动发出，请勿回复）");
 				}
 				break;
 			case 3:  //院系管理员同意维修操作
@@ -262,10 +262,10 @@ public class InstrumentServiceImpl implements InstrumentService {
 				
 				
 				//3.向用户发邮件
-				mailService.sendMsg(user.getEmail(),
-						"你申请的仪器【"+instAssign.getInstrumentName()+
-						"】正在派遣！请及时关注仪器申请状态，联系院系管理员（<b>"+instAssign.getAssignManager()+
-						" "+instAssign.getManagerTel()+"</b>）获取。谢谢！（本通知由系统自动发出，请勿回复）");
+//				mailService.sendMsg(user.getEmail(),
+//						"你申请的仪器【"+instAssign.getInstrumentName()+
+//						"】正在派遣！请及时关注仪器申请状态，联系院系管理员（<b>"+instAssign.getAssignManager()+
+//						" "+instAssign.getManagerTel()+"</b>）获取。谢谢！（本通知由系统自动发出，请勿回复）");
 				break;
 			case 8:  //系统管理员不允许仪器调拨申请
 				InstStock st1 = instrumentMapper.getInstStockByInstId(instAssign.getInstrumentId());
@@ -291,9 +291,9 @@ public class InstrumentServiceImpl implements InstrumentService {
 					
 					
 					//5.向用户发邮件
-					mailService.sendMsg(user.getEmail(),
-									"你申请的仪器【"+instAssign.getInstrumentName()+
-									"】调拨失败！有关原因请登录网站查看我的留言。给您带来不便，尽情谅解！（本通知由系统自动发出，请勿回复）");
+//					mailService.sendMsg(user.getEmail(),
+//									"你申请的仪器【"+instAssign.getInstrumentName()+
+//									"】调拨失败！有关原因请登录网站查看我的留言。给您带来不便，尽情谅解！（本通知由系统自动发出，请勿回复）");
 				}
 				break;
 			case 9:  //院系管理员确认已维修仪器
@@ -341,10 +341,10 @@ public class InstrumentServiceImpl implements InstrumentService {
 				
 				
 				//3.向用户发邮件
-				mailService.sendMsg(user.getEmail(),
-								"你申请的仪器【"+instAssign.getInstrumentName()+
-								"】已由院系管理员【"+instAssign.getAssignManager()+" : "+instAssign.getManagerTel()+
-								"】签收。请尽联系管理员快取件，谢谢！（本通知由系统自动发出，请勿回复）");
+//				mailService.sendMsg(user.getEmail(),
+//								"你申请的仪器【"+instAssign.getInstrumentName()+
+//								"】已由院系管理员【"+instAssign.getAssignManager()+" : "+instAssign.getManagerTel()+
+//								"】签收。请尽联系管理员快取件，谢谢！（本通知由系统自动发出，请勿回复）");
 				break;
 		}
 		
@@ -354,7 +354,12 @@ public class InstrumentServiceImpl implements InstrumentService {
 	public List<InstRepair> cl_addInstRepair(InstRepair instRepair, Affiche affiche) throws Exception {
 		//1.添加到系统公告
 		afficheMapper.addAffiche(affiche);
-		//2.添加仪器维修表
+		//2.修改仪器调拨表下的仪器状态
+		InstAssign ass = instrumentMapper.getInstAssignById(instRepair.getAssId());
+		ass.setStatus(Constants.INSTRUMENT_STATUS_9);  //将调拨表中的该仪器设置成维修中
+		instrumentMapper.updateInstAssign(ass);
+		//3.添加仪器维修表
+		instRepair.setAssignId(ass.getAssignNo());
 		instrumentMapper.addInstRepair(instRepair);
 		//获取当前用户全部的维修记录
 		InstRepair repair = new InstRepair();

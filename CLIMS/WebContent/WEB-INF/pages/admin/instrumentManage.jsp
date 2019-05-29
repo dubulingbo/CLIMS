@@ -30,7 +30,6 @@
 		<div class="box-content">
 			<a href="javascript:void();" class="btn btn-large addInstrument"><i
 				class="icon-plus"></i> 添加仪器</a>
-
 			<hr>
 			<c:if test="${page.items != null }">
 				<table class="table">
@@ -49,7 +48,9 @@
 							<tr>
 								<td style="padding-top: 12px;">${inst.instrumentName }</td>
 								<td class="center" style="padding-top: 12px;">${inst.instrumentType }</td>
-								<td class="center" style="padding-top: 12px;">${inst.price }</td>
+								<td class="center" style="padding-top: 12px;">
+									<fmt:formatNumber value="${inst.price }" maxFractionDigits="2"/>
+								</td>
 								<td class="center" style="padding-top: 12px;">${inst.dept }</td>
 								<td class="center" style="padding-top: 12px;">${inst.className }</td>
 								<td class="center" style="width: 250px;">

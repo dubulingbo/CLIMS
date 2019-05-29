@@ -1,12 +1,16 @@
 package cn.clims.controller;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,18 +18,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mysql.jdbc.StringUtils;
 
+import cn.clims.pojo.DataDictionary;
 import cn.clims.pojo.Dept;
+import cn.clims.pojo.Information;
 import cn.clims.pojo.Role;
+import cn.clims.pojo.UploadTemp;
 import cn.clims.pojo.User;
+import cn.clims.service.dataDictionary.DataDictionaryService;
 import cn.clims.service.dept.DeptService;
+import cn.clims.service.information.InformationService;
+import cn.clims.service.instrument.InstrumentService;
 import cn.clims.service.role.RoleService;
+import cn.clims.service.uploadtemp.UploadTempService;
 import cn.clims.service.user.UserService;
 import cn.clims.tools.Constants;
+import cn.clims.tools.HtmlEncode;
 import cn.clims.tools.JsonDateValueProcessor;
+import cn.clims.tools.MD5;
 import cn.clims.tools.PageSupport;
 import cn.clims.tools.SQLTools;
 import net.sf.json.JSONObject;
@@ -45,17 +59,19 @@ public class AdminController extends BaseController {
 	@Resource
 	private DeptService deptService;
 	
-
+	@Resource 
+	private InformationService informationService;
 	
-	/**
-	 * 查看用户列表（分頁查詢）
-	 * @param model
-	 * @param session
-	 * @param s_userCode
-	 * @param s_roleId
-	 * @param pageIndex
-	 * @return
-	 */
+	@Resource
+	private DataDictionaryService dataDictionaryService;
+	
+	@Resource
+	private InstrumentService instrumentService;
+
+	@Resource
+	private UploadTempService uploadTempService;
+
+/*********************************用户管理模块开发**************************************/
 	@SuppressWarnings({ "unchecked", "unused" })
 	@RequestMapping(value="/userManage.html")
 	public ModelAndView userManage(Model model,HttpSession session,
@@ -184,7 +200,7 @@ public class AdminController extends BaseController {
 			try {
 				System.out.println("addUser========"+addUser);
 				String password = addUser.getUserPassword();
-				String userPassword = password.substring(password.length()-6);
+				String userPassword = MD5.encrypt(password.substring(password.length()-6));
 				addUser.setUserPassword(userPassword);
 				addUser.setCreationDate(new Date());
 				addUser.setCreatedBy(this.getCurrentUser().getId());
@@ -269,5 +285,320 @@ public class AdminController extends BaseController {
 		return result;
 		
 	}
+	
+	
+	
+	
+	
+	
+	
+/*********************************资讯管理模块开发**************************************/
+	@RequestMapping(value="/infoManage.html")
+	@SuppressWarnings("unchecked")
+	public ModelAndView infoManage(HttpSession session, Model model,
+			@RequestParam(value="pageIndex",required=false)String pageIndex){
+		Map<String,Object> baseModel = (Map<String,Object>)session.getAttribute(Constants.SESSION_BASE_MODEL);
+		if(baseModel == null){
+			return new ModelAndView("redirect:/");
+		}else{
+			//获取dicList
+			DataDictionary dic = new DataDictionary();
+			dic.setTypeCode("INFO_TYPE");
+			List<DataDictionary> dicList = null;
+			try {
+				dicList = dataDictionaryService.getDicListByTypeCode(dic);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			//page分页列表
+			PageSupport page = new PageSupport();
+			Information info = new Information();
+			System.out.println("pageIndex====================== " + pageIndex);
+			try {
+				page.setTotalCount(informationService.getInformationCount());
+			} catch (Exception e) {
+				e.printStackTrace();
+				page.setTotalCount(0);
+			}
+			
+			if(page.getTotalCount() > 0){
+				
+				if(!StringUtils.isNullOrEmpty(pageIndex)){
+					page.setCurrentPageNo(Integer.valueOf(pageIndex));
+				}else{
+					page.setCurrentPageNo(1);
+				}
+					
+				
+				//设置当前页号，控制首尾页
+				if(page.getCurrentPageNo() <= 0){
+					page.setCurrentPageNo(1);
+				}
+				
+				if(page.getCurrentPageNo() > page.getTotalPageCount()){
+					page.setCurrentPageNo(page.getTotalPageCount());
+				}
+				
+				//mysql -- 分页查询limit ?,? （第一个参数下标从零开始）
+				info.setStartPageNo((page.getCurrentPageNo() - 1)*page.getPageSize());
+				info.setPageSize(page.getPageSize());
+				List<Information> infoList = null;
+				try {
+					infoList = informationService.getInformationList(info);
+				} catch (Exception e) {
+					e.printStackTrace();
+					infoList = null;
+				}
+				page.setItems(infoList);
+			}else{
+				page.setItems(null);
+			}
+			model.addAllAttributes(baseModel);
+			model.addAttribute("dicList", dicList);
+			model.addAttribute("page", page);
+			return new ModelAndView("admin/infoManage");
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/addInformation.html")
+	public ModelAndView addInfo(HttpSession session,Model model){
+		Map<String,Object> baseModel = (Map<String,Object>)session.getAttribute(Constants.SESSION_BASE_MODEL);
+		if(baseModel == null){
+			return new ModelAndView("redirect:/");
+		}else{
+			//获取dicList
+			DataDictionary dic = new DataDictionary();
+			dic.setTypeCode("INFO_TYPE");
+			List<DataDictionary> dicList = null;
+			try {
+				dicList = dataDictionaryService.getDicListByTypeCode(dic);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			model.addAllAttributes(baseModel);
+			model.addAttribute("dicList", dicList);
+			return new ModelAndView("admin/addInformation");
+		}
+	}
+	
+	@RequestMapping(value = "/information/uploadInfoFile.html",
+			produces={"text/html;charset=UTF-8"}, method=RequestMethod.POST)  
+	@ResponseBody
+    public Object uploadInfoFile(@RequestParam(value ="uploadInformationFile",required = false) MultipartFile uploadInformationFile, 
+    		@RequestParam(value ="uploadInformationFile",required = false) MultipartFile uploadInformationFileM, 
+    					 HttpServletRequest request,HttpSession session){
+        if(uploadInformationFile == null && uploadInformationFileM != null)
+        	uploadInformationFile = uploadInformationFileM;
+        if(uploadInformationFile != null){
+        	String path = request.getSession().getServletContext().
+        			getRealPath("statics"+File.separator+"infofiles");
+        	String oldFileName = uploadInformationFile.getOriginalFilename();
+        	System.out.println("==========oldFileName : " + oldFileName);
+            String prefix=FilenameUtils.getExtension(oldFileName);
+            int filesize = 50*1024*1024;
+            if(uploadInformationFile.getSize() >  filesize){//上传大小不得超过 50M
+            	return Constants.FILEUPLOAD_ERROR_3;
+            }else{
+            	String fileName = System.currentTimeMillis()+RandomUtils.nextInt(1000000)+"_info."+prefix;  
+                File targetFile = new File(path, fileName);  
+                if(!targetFile.exists()){  
+                    targetFile.mkdirs();  
+                }  
+                //保存  
+                try {  
+                	uploadInformationFile.transferTo(targetFile);  
+                	//add file info to uploadtemp
+                	User sessionUser =  ((User)session.getAttribute(Constants.CURRENT_USER));
+                	UploadTemp uploadTemp = new UploadTemp();
+                	uploadTemp.setUploader(sessionUser.getUserCode());
+                	uploadTemp.setUploadType("info");
+                	uploadTemp.setUploadFilePath(File.separator + "statics" + File.separator + "infofiles" + File.separator + fileName );
+                	uploadTempService.add(uploadTemp);
+                	String url = oldFileName + "[[[]]]" + request.getContextPath()+"/statics/infofiles/"+fileName + "size:"+uploadInformationFile.getSize();
+                    return url;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return Constants.FILEUPLOAD_ERROR_1;
+                }
+            }
+        }
+        return Constants.FILEUPLOAD_ERROR_5;
+    }
+	
+	@RequestMapping(value="/information/delInfoFile.html",method=RequestMethod.POST)
+	@ResponseBody
+	public Object delInfoFile( HttpServletRequest request,HttpSession session,@RequestParam String filePath,
+			@RequestParam(value="flag",required=false)String flag){
+		if(StringUtils.isNullOrEmpty(filePath) || StringUtils.isNullOrEmpty(flag)){
+			return "nodata";
+		}else{
+			try {
+				String path = request.getSession().getServletContext().getRealPath("/");
+				File file = new File(path + filePath);
+				int f = Integer.valueOf(flag); //flag = 1 --添加资讯信息中的删除文件；   flag = 2 --修改资讯信息中的删除文件
+				if(file.exists()){
+					file.delete();
+				}
+				if(f == 2){
+					Information information = new Information();
+					information.setTypeName(filePath);
+					information.setFileName("");
+					information.setFilePath("#");
+					information.setFileSize(0d);
+					System.out.println("本次从clims_infomation表中删除的记录数为 ： " + informationService.modifyInformationFileInfo(information));
+				}
+				UploadTemp uploadTemp = new UploadTemp();
+				filePath = filePath.replaceAll("/", File.separator+File.separator);
+				uploadTemp.setUploadFilePath(filePath);
+				System.out.println("本次从clims_uploadTemp表中删除的记录数为 ： " + uploadTempService.delete(uploadTemp));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "failed";
+			}
+			return "success";
+		}
+	}
+	
+	@RequestMapping(value="/addInfoSave.html",method=RequestMethod.POST)
+	public ModelAndView addInfoSave(HttpSession session,
+			@ModelAttribute("addInfo") Information addInfo){
+		if(session.getAttribute(Constants.SESSION_BASE_MODEL) == null){
+			return new ModelAndView("/ulogin");
+		}else{
+			System.out.println("addInfoSave==========");
+			System.out.println("\ttitle : "+addInfo.getTitle());
+			System.out.println("\tcontent : "+addInfo.getContent());
+			System.out.println("\tstate : "+addInfo.getState());
+			System.out.println("\ttypeId : "+addInfo.getTypeId());
+			
+			try {
+				//处理标题
+				if(null != addInfo.getTitle() && !addInfo.getTitle().equals("")){
+					System.out.println("======= addInformation HtmlEncode.htmlEncode(information.getTitle())================" + HtmlEncode.htmlEncode(addInfo.getTitle()));
+					addInfo.setTitle(HtmlEncode.htmlEncode(addInfo.getTitle()));
+				}
+				User sessionUser =  ((User)session.getAttribute(Constants.CURRENT_USER));
+				addInfo.setUploadDate(new Date());
+				UploadTemp uploadTemp = new UploadTemp();
+            	uploadTemp.setUploader(sessionUser.getUserCode());
+            	uploadTemp.setUploadType("info");
+            	uploadTemp.setUploadFilePath(addInfo.getFilePath().replaceAll("/", File.separator+File.separator));
+            	System.out.println("已成功删除图片记录的条数为   : " + uploadTempService.delete(uploadTemp));  //删除之前缓存的图片记录
+				informationService.addInformation(addInfo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return new ModelAndView("redirect:/backend/admin/infoManage.html");
+		}
+	}
+
+	@RequestMapping("/information/modifyInfoState.html")
+	@ResponseBody
+	public Object modifyInfoState(HttpSession session,@RequestParam String inforState){
+		if(StringUtils.isNullOrEmpty(inforState)){
+			return "nodata";
+		}else{
+			try {
+				JSONObject informationObject = JSONObject.fromObject(inforState);
+				Information information =  (Information)JSONObject.toBean(informationObject, Information.class);
+				information.setPublisher(((User)session.getAttribute(Constants.CURRENT_USER)).getUserCode());
+				information.setPublishDate(new Date());
+				informationService.modifyInformation(information);
+				return "success";
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "failed";
+			}
+		}
+	}
+	
+	@RequestMapping(value="/viewInformation.html", 
+			produces = {"text/html;charset=UTF-8"},method=RequestMethod.POST)
+	@ResponseBody
+	public Object viewInfo(HttpSession session,@RequestParam Integer id){
+		String result = "";
+		if(null == id || "".equals(id)){
+			result =  "nodata";
+		}else{
+			try {
+				Information information = new Information();
+				information.setId(id);
+				information = informationService.getInformation(information);
+				if(null != information && information.getTitle() != null){
+					information.setTitle(HtmlEncode.htmlDecode(information.getTitle()));
+					JsonConfig jsonConfig = new JsonConfig();
+					jsonConfig.registerJsonValueProcessor(Date.class,new JsonDateValueProcessor("yyyy-MM-dd HH:mm"));
+					result =  JSONObject.fromObject(information,jsonConfig).toString();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				result =  "failed";
+			}
+		}
+		return result;
+	}
+	
+	@RequestMapping(value="/deleteInformation.html",method=RequestMethod.POST)
+	@ResponseBody
+	public Object delInfo(HttpServletRequest request,HttpSession session,@RequestParam Integer id){
+		
+		if(null == id || "".equals(id)){
+			return "nodata";
+		}else{
+			try {
+				Information information = new Information();
+				information.setId(id);
+				Information _information = new Information();
+				_information = informationService.getInformation(information);
+				if(null != _information){
+					String path = request.getSession().getServletContext().getRealPath("/");  
+					_information.setFilePath(_information.getFilePath().replace("/", File.separator+File.separator));
+					File file = new File(path + _information.getFilePath());
+					if(file.exists()){
+						file.delete();
+					}
+					informationService.deleteInformation(information);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "failed";
+			}
+			return "success";
+		}
+	}
+	
+	//modifyInformation.html
+	@RequestMapping(value="/modifyInformation.html",method=RequestMethod.POST)
+	public ModelAndView modifyInfo(@ModelAttribute("modifyInformation") Information information,HttpSession session){
+		if(session.getAttribute(Constants.SESSION_BASE_MODEL) == null){
+			return new ModelAndView("redirect:/");
+		}else{
+			try {
+//				User sessionUser =  ((User)session.getAttribute(Constants.CURRENT_USER));
+//				information.setPublisher(sessionUser.getUserCode());
+//				information.setPublishDate(new Date(System.currentTimeMillis()));
+				//information.setState(1);
+				information.setUploadDate(new Date());
+				if(null != information.getTitle() && !information.getTitle().equals("")){
+					System.out.println("======= modifyInformation HtmlEncode.htmlEncode(information.getTitle())================" + 
+								HtmlEncode.htmlEncode(information.getTitle()));
+					information.setTitle(HtmlEncode.htmlEncode(information.getTitle()));
+				}
+				informationService.modifyInformation(information);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return new ModelAndView("redirect:/backend/admin/infoManage.html");
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 }

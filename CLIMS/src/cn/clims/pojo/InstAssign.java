@@ -18,7 +18,6 @@ public class InstAssign extends Instrument {
 	
 	private String reason;  //用来记录拒绝的原因
 	
-	private Integer partitionNo;
 	
 	public String getAssignNo() {
 		return assignNo;
@@ -86,12 +85,6 @@ public class InstAssign extends Instrument {
 	}
 	public void setReason(String reason) {
 		this.reason = reason;
-	}
-	public Integer getPartitionNo() {
-		return partitionNo;
-	}
-	public void setPartitionNo(Integer partitionNo) {
-		this.partitionNo = partitionNo;
 	}
 	
 }

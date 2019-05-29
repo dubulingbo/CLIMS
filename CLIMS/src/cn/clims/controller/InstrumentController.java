@@ -228,20 +228,6 @@ public class InstrumentController extends BaseController{
 
 	
 	/**
-	 * 进入仪器设备分类统计页面
-	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/backend/admin/instrumentClassify.html")
-	public ModelAndView instrumentClassify(Model model,HttpSession session){
-		Map<String,Object> baselModel = (Map<String, Object>) session.getAttribute(Constants.SESSION_BASE_MODEL);
-		
-			
-			
-		model.addAllAttributes(baselModel);
-		return new ModelAndView("admin/instrumentClassify");	
-	}
-	
-	/**
 	 * 进入仪器调拨管理页面
 	 */
 	@SuppressWarnings("unchecked")
@@ -252,11 +238,10 @@ public class InstrumentController extends BaseController{
 		//系统管理员只能查看（对自己可见）的仪器调拨申请
 		InstAssign assign = new InstAssign();
 		assign.setOpacifyToAdmin(Constants.OPACIFY_TO_ADMIN_2);
-		assign.setPartitionNo(1);
 		PageSupport page = new PageSupport();
 		
 		try {
-			page.setTotalCount(instrumentService.getInstAssignCount(assign));
+			page.setTotalCount(instrumentService.getInstAssignCount_p1(assign));
 		} catch (Exception e) {
 			e.printStackTrace();
 			page.setTotalCount(0);
@@ -278,7 +263,7 @@ public class InstrumentController extends BaseController{
 			assign.setStartPageNo((page.getCurrentPageNo() - 1)*page.getPageSize());
 			assign.setPageSize(page.getPageSize());
 			try {
-				page.setItems(instrumentService.getInstAssignList(assign));
+				page.setItems(instrumentService.getInstAssignList_p1(assign));
 			} catch (Exception e) {
 				e.printStackTrace();
 				page.setItems(null);
@@ -379,8 +364,7 @@ public class InstrumentController extends BaseController{
 			InstAssign assign = new InstAssign();
 			assign.setCreatedBy(this.getCurrentUser().getId());
 			System.out.println("当前用户的id为："+this.getCurrentUser().getId());
-			assign.setPartitionNo(1);
-			model.addAttribute("my_assignApplyList", instrumentService.getInstAssignList(assign));
+			model.addAttribute("my_assignApplyList", instrumentService.getInstAssignList_p1(assign));
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("my_assignApplyList", null);
@@ -440,7 +424,6 @@ public class InstrumentController extends BaseController{
 		instAssign.setCreatedBy(this.getCurrentUser().getId());
 		instAssign.setStatus(Constants.INSTRUMENT_STATUS_7);
 		instAssign.setMaintainable("yes");
-		instAssign.setPartitionNo(2);
 		
 		if(!StringUtils.isNullOrEmpty(s_instrumentNo)){
 			instAssign.setInstrumentNo(SQLTools.transfer(s_instrumentNo));
@@ -449,7 +432,7 @@ public class InstrumentController extends BaseController{
 		//获取分页对象
 		PageSupport page = new PageSupport();
 		try {
-			page.setTotalCount(instrumentService.getInstAssignCount(instAssign));
+			page.setTotalCount(instrumentService.getInstAssignCount_p2(instAssign));
 		} catch (Exception e) {
 			e.printStackTrace();
 			page.setTotalCount(0);
@@ -473,7 +456,7 @@ public class InstrumentController extends BaseController{
 			instAssign.setPageSize(page.getPageSize());
 			
 			try {
-				page.setItems(instrumentService.getInstAssignList(instAssign));
+				page.setItems(instrumentService.getInstAssignList_p2(instAssign));
 				model.addAttribute("deptList", deptService.getDeptList());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -685,7 +668,7 @@ public class InstrumentController extends BaseController{
 		String cjson = "noexist";
 		if(assignId != null && !"".equals(assignId)){
 			try {
-				InstAssign assign = instrumentService.getInstAssignByAssId(assignId);
+				InstAssign assign = instrumentService.getInstAssignByAssignNo(assignId);
 				if(assign != null){
 					JSONObject jo = JSONObject.fromObject( assign);
 					cjson = jo.toString();
@@ -894,10 +877,10 @@ public class InstrumentController extends BaseController{
 			@RequestParam(value="pageIndex",required=false)String pageIndex){
 		InstAssign assign = new InstAssign();
 		assign.setDept(this.getCurrentUser().getDept());
-		assign.setPartitionNo(1);
+
 		try {
 			PageSupport page = new PageSupport();
-			page.setTotalCount(instrumentService.getInstAssignCount(assign)); //设置总记录数
+			page.setTotalCount(instrumentService.getInstAssignCount_p1(assign)); //设置总记录数
 			
 			if(page.getTotalCount() > 0){
 				//设置当前页号
@@ -917,7 +900,7 @@ public class InstrumentController extends BaseController{
 				
 				assign.setStartPageNo((page.getCurrentPageNo() - 1)*page.getPageSize());
 				assign.setPageSize(page.getPageSize());
-				page.setItems(instrumentService.getInstAssignList(assign));
+				page.setItems(instrumentService.getInstAssignList_p1(assign));
 			}
 			else {
 				page.setItems(null);

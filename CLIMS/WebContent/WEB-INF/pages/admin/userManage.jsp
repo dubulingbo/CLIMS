@@ -24,8 +24,7 @@
 				<i class="icon-user"></i> 用户列表
 			</h2>
 			<div class="box-icon">
-				<span class="icon32 icon-color icon-add addUser"
-					style="cursor: pointer" />
+				<span class="icon32 icon-color icon-add addUser" style="cursor: pointer" />
 			</div>
 		</div>
 		<div class="box-content">
@@ -50,7 +49,6 @@
 					<tr>
 						<th>用户姓名</th>
 						<th>登录账号</th>
-						<th>登录密码</th>
 						<th>用户角色</th>
 						<th>所在单位</th>
 						<th>注册日期</th>
@@ -64,11 +62,10 @@
 							<tr>
 								<td class="center">${user.userName}</td>
 								<td class="center">${user.userCode}</td>
-								<td class="center">${user.userPassword}</td>
 								<td class="center">${user.userRoleName }</td>
 								<td class="center">${user.dept}</td>
-								<td class="center"><fmt:formatDate
-										value="${user.creationDate }" pattern="yyyy-MM-dd HH:mm:ss" />
+								<td class="center">
+									<fmt:formatDate value="${user.creationDate }" pattern="yyyy-MM-dd HH:mm:ss" />
 								</td>
 								<td class="center"><a class="btn btn-success viewUser"
 									href="#" id="${user.id }"> <i
@@ -265,8 +262,8 @@
 			</ul>
 		</div>
 		<div class="modal-footer">
-			<a href="#" class="btn perfectUserCancel" data-dismiss="modal"> 取
-				消 </a> <input type="submit" class="btn btn-primary" value=" 修 改 " />
+			<a href="#" class="btn perfectUserCancel" data-dismiss="modal"> 取消 </a> 
+			<input type="submit" class="btn btn-primary" value=" 修 改 ">
 		</div>
 	</form>
 </div>

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cn.clims.tools.MD5;
+
 @SuppressWarnings("serial")
 public class User extends Base {
 
@@ -151,6 +153,8 @@ public class User extends Base {
 		this.locNo = locNo;
 	}
 	
-	
+	public static void main(String[] args) {
+		System.out.println(MD5.encrypt("000000"));
+	}
 	
 }

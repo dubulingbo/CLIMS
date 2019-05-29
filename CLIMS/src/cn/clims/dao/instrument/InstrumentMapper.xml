@@ -139,110 +139,105 @@
 
 
 	<!-- Operation of clims_instAssign table starts -->
-	<select id="getInstAssignList" parameterType="instAssign" resultType="instAssign">
-		<if test="partitionNo == 1">  <!-- 访问分区p1 -->
-			select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
-				(select valueName from clims_dataDictionary d where d.typeCode='INSTRUMENT_STATUS' and d.valueId=inst.status) as statusName,
-				(select speciesName from clims_species where id = ins.classNo) as className,
-				ins.price,ins.manufacturer,ins.productionDate,ins.country,
-				ins.warranty,ins.maintainable,ins.purchaseDate,ins.number,ins.note,
-				(select locName from clims_location where id = inst.locNo) as locName,
-				(select userName from clims_user where id = inst.assignManagerId) as assignManager,
-				(select userName from clims_user where id = inst.createdBy) as createdByName
-			from clims_instAssign PARTITION (p1) inst,clims_instrument ins
-			where inst.instrumentId=ins.id
-			<if test="instrumentNo != null and instrumentNo != ''">
-				and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
-			</if>
-			<if test="dept != null and dept != ''">
-				and inst.dept = #{dept}
-			</if>
-			<if test="status != null">
-				and inst.status = #{status}
-			</if>
-			<if test="opacifyToAdmin == 2">
-				and inst.opacifyToAdmin = #{opacifyToAdmin}
-			</if>
-			<if test="maintainable != null and maintainable != ''">
-				and ins.maintainable = #{maintainable}
-			</if>
-			order by inst.status ASC,inst.creationDate ASC
-			<if test="startPageNo != null and pageSize != null">
-				limit #{startPageNo},#{pageSize}
-			</if>
+	<select id="getInstAssignList_p1" parameterType="instAssign" resultType="instAssign"> <!-- 访问分区p1 -->
+		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
+			(select valueName from clims_dataDictionary d where d.typeCode='INSTRUMENT_STATUS' and d.valueId=inst.status) as statusName,
+			(select speciesName from clims_species where id = ins.classNo) as className,
+			ins.price,ins.manufacturer,ins.productionDate,ins.country,
+			ins.warranty,ins.maintainable,ins.purchaseDate,ins.number,ins.note,
+			(select locName from clims_location where id = inst.locNo) as locName,
+			(select userName from clims_user where id = inst.assignManagerId) as assignManager,
+			(select userName from clims_user where id = inst.createdBy) as createdByName
+		from clims_instAssign PARTITION (p1) inst,clims_instrument ins
+		where inst.instrumentId=ins.id
+		<if test="instrumentNo != null and instrumentNo != ''">
+			and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
 		</if>
-		<if test="partitionNo == 2">  <!-- 访问分区p2 -->
-			select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
-				(select valueName from clims_dataDictionary d where d.typeCode='INSTRUMENT_STATUS' and d.valueId=inst.status) as statusName,
-				(select speciesName from clims_species where id = ins.classNo) as className,
-				ins.price,ins.manufacturer,ins.productionDate,ins.country,
-				ins.warranty,ins.maintainable,ins.purchaseDate,ins.number,ins.note,
-				(select locName from clims_location where id = inst.locNo) as locName,
-				(select userName from clims_user where id = inst.assignManagerId) as assignManager,
-				(select userName from clims_user where id = inst.createdBy) as createdByName
-			from clims_instAssign PARTITION (p2) inst,clims_instrument ins
-			where inst.instrumentId=ins.id
-			<if test="instrumentNo != null and instrumentNo != ''">
-				and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
-			</if>
-			<if test="dept != null and dept != ''">
-				and inst.dept = #{dept}
-			</if>
-			<if test="status != null">
-				and inst.status = #{status}
-			</if>
-			<if test="opacifyToAdmin == 2">
-				and inst.opacifyToAdmin = #{opacifyToAdmin}
-			</if>
-			<if test="maintainable != null and maintainable != ''">
-				and ins.maintainable = #{maintainable}
-			</if>
-			order by inst.status ASC,inst.creationDate ASC
-			<if test="startPageNo != null and pageSize != null">
-				limit #{startPageNo},#{pageSize}
-			</if>
-			
+		<if test="dept != null and dept != ''">
+			and inst.dept = #{dept}
+		</if>
+		<if test="status != null">
+			and inst.status = #{status}
+		</if>
+		<if test="opacifyToAdmin == 2">
+			and inst.opacifyToAdmin = #{opacifyToAdmin}
+		</if>
+		<if test="maintainable != null and maintainable != ''">
+			and ins.maintainable = #{maintainable}
+		</if>
+		order by inst.status ASC,inst.creationDate DESC
+		<if test="startPageNo != null and pageSize != null">
+			limit #{startPageNo},#{pageSize}
+		</if>
+	</select>
+	<select id="getInstAssignList_p2" parameterType="instAssign" resultType="instAssign"> <!-- 访问分区p2 -->  
+		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
+			(select valueName from clims_dataDictionary d where d.typeCode='INSTRUMENT_STATUS' and d.valueId=inst.status) as statusName,
+			(select speciesName from clims_species where id = ins.classNo) as className,
+			ins.price,ins.manufacturer,ins.productionDate,ins.country,
+			ins.warranty,ins.maintainable,ins.purchaseDate,ins.number,ins.note,
+			(select locName from clims_location where id = inst.locNo) as locName,
+			(select userName from clims_user where id = inst.assignManagerId) as assignManager,
+			(select userName from clims_user where id = inst.createdBy) as createdByName
+		from clims_instAssign PARTITION (p2) inst,clims_instrument ins
+		where inst.instrumentId=ins.id
+		<if test="instrumentNo != null and instrumentNo != ''">
+			and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
+		</if>
+		<if test="dept != null and dept != ''">
+			and inst.dept = #{dept}
+		</if>
+		<if test="status != null">
+			and inst.status = #{status}
+		</if>
+		<if test="opacifyToAdmin == 2">
+			and inst.opacifyToAdmin = #{opacifyToAdmin}
+		</if>
+		<if test="maintainable != null and maintainable != ''">
+			and ins.maintainable = #{maintainable}
+		</if>
+		order by inst.status ASC,inst.creationDate DESC
+		<if test="startPageNo != null and pageSize != null">
+			limit #{startPageNo},#{pageSize}
 		</if>
 	</select>
 
-	<select id="getInstAssignCount" parameterType="instAssign" resultType="int">
-		<if test="partitionNo == 1">  <!-- 访问分区p1 -->
-			select count(1) from clims_instAssign partition(p1) inst,clims_instrument ins
-			where inst.instrumentId=ins.id
-			<if test="instrumentNo != null and instrumentNo != ''">
-				and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
-			</if>
-			<if test="dept != null and dept != ''">
-				and inst.dept = #{dept}
-			</if>
-			<if test="status != null">
-				and inst.status = #{status}
-			</if>
-			<if test="opacifyToAdmin == 2">
-				and inst.opacifyToAdmin = #{opacifyToAdmin}
-			</if>
-			<if test="maintainable != null and maintainable != ''">
-				and ins.maintainable = #{maintainable}
-			</if>
+	<select id="getInstAssignCount_p1" parameterType="instAssign" resultType="int"> <!-- 访问分区p1 -->
+		select count(1) from clims_instAssign partition(p1) inst,clims_instrument ins where inst.instrumentId=ins.id
+		<if test="instrumentNo != null and instrumentNo != ''">
+			and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
 		</if>
-		<if test="partitionNo == 2">  <!-- 访问分区p2 -->
-			select count(1) from clims_instAssign partition(p2) inst,clims_instrument ins
-			where inst.instrumentId=ins.id
-			<if test="instrumentNo != null and instrumentNo != ''">
-				and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
-			</if>
-			<if test="dept != null and dept != ''">
-				and inst.dept = #{dept}
-			</if>
-			<if test="status != null">
-				and inst.status = #{status}
-			</if>
-			<if test="opacifyToAdmin == 2">
-				and inst.opacifyToAdmin = #{opacifyToAdmin}
-			</if>
-			<if test="maintainable != null and maintainable != ''">
-				and ins.maintainable = #{maintainable}
-			</if>
+		<if test="dept != null and dept != ''">
+			and inst.dept = #{dept}
+		</if>
+		<if test="status != null">
+			and inst.status = #{status}
+		</if>
+		<if test="opacifyToAdmin == 2">
+			and inst.opacifyToAdmin = #{opacifyToAdmin}
+		</if>
+		<if test="maintainable != null and maintainable != ''">
+			and ins.maintainable = #{maintainable}
+		</if>
+	</select>
+	
+	<select id="getInstAssignCount_p2" parameterType="instAssign" resultType="int"> <!-- 访问分区p2 -->
+		select count(1) from clims_instAssign partition(p2) inst,clims_instrument ins
+		where inst.instrumentId=ins.id
+		<if test="instrumentNo != null and instrumentNo != ''">
+			and ins.instrumentNo like CONCAT('%',#{instrumentNo},'%')
+		</if>
+		<if test="dept != null and dept != ''">
+			and inst.dept = #{dept}
+		</if>
+		<if test="status != null">
+			and inst.status = #{status}
+		</if>
+		<if test="opacifyToAdmin == 2">
+			and inst.opacifyToAdmin = #{opacifyToAdmin}
+		</if>
+		<if test="maintainable != null and maintainable != ''">
+			and ins.maintainable = #{maintainable}
 		</if>
 	</select>
 
@@ -259,16 +254,15 @@
 		where inst.instrumentId = ins.id and inst.id = #{id}
 	</select>
 	
-	<select id="getInstAssignByAssId" parameterType="string" resultType="instAssign">
+	<select id="getInstAssignByAssignNo" parameterType="string" resultType="instAssign">
 		select inst.*,ins.instrumentName,ins.instrumentNo,ins.instrumentType,ins.classNo,
-			   (select speciesName from clims_species where id = ins.classNo) as
-			   className,ins.price,ins.manufacturer,ins.productionDate,
-			   ins.country,ins.number,ins.note,
-			   (select userName from clims_user where id = inst.assignManagerId) as assignManager,
-			   (select locName from clims_location where id = inst.locNo) as locName,
-			   (select userName from clims_user where id = inst.createdBy) as createdByName
+		   (select speciesName from clims_species where id = ins.classNo) as className,
+		   ins.price,ins.manufacturer,ins.productionDate,ins.country,ins.number,ins.note,
+		   (select userName from clims_user where id = inst.assignManagerId) as assignManager,
+		   (select locName from clims_location where id = inst.locNo) as locName,
+		   (select userName from clims_user where id = inst.createdBy) as createdByName
 		from clims_instassign inst,clims_instrument ins
-		where inst.instrumentId = ins.id and inst.assignNo = #{assignId}
+		where inst.instrumentId = ins.id and inst.assignNo = #{assignNo}
 	</select>
 	
 	<update id="updateInstAssign" parameterType="instAssign">
@@ -302,14 +296,6 @@
 	<insert id="addInstAssign" parameterType="instAssign">
 		insert into 
 		clims_instAssign
-			(instrumentId,dept,assignNumber,createdBy,creationDate,status,opacifyToAdmin,locNo)
-		values
-			(#{instrumentId},#{dept},#{assignNumber},#{createdBy},#{creationDate},#{status},#{opacifyToAdmin},#{locNo})
-	</insert>
-	
-	<insert id="addInstAssign_all" parameterType="instAssign">
-		insert into 
-		clims_instAssign
 			(assignNo,instrumentId,dept,locNo,assignNumber,assignManagerId,
 			 managerTel,createdBy,checkDate,creationDate,status,opacifyToAdmin)
 		values
@@ -317,18 +303,17 @@
 			 #{managerTel},#{createdBy},#{checkDate},#{creationDate},#{status},#{opacifyToAdmin})
 	</insert>
 	
-	<select id="assignNoIsExist" parameterType="instAssign" resultType="integer">
+	<select id="assignIdIsExist" parameterType="integer" resultType="integer">
 		select count(1) from clims_instAssign partition(p2)
 		where instrumentId = #{instrumentId}
 	</select>
 	
-	<select id="getInstAssignByInstId" parameterType="instAssign" resultType="instAssign">
-		<if test="partitionNo == 1">
-			select * from clims_instAssign partition(p1) where instrumentId=#{instrumentId}
-		</if>
-		<if test="partitionNo == 2">
-			select * from clims_instAssign partition(p2) where instrumentId=#{instrumentId}
-		</if>
+	<select id="getInstAssignByInstId_p1" parameterType="integer" resultType="instAssign">
+		select * from clims_instAssign partition(p1) where instrumentId=#{instrumentId}			
+	</select>
+	
+	<select id="getInstAssignByInstId_p2" parameterType="integer" resultType="instAssign">
+		select * from clims_instAssign partition(p2) where instrumentId=#{instrumentId}
 	</select>
 	<!-- Operation of clims_instAssign table ends -->
 

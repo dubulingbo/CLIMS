@@ -40,7 +40,7 @@ div .modal-body label {
 <link href='/statics/css/jquery.iphone.toggle.css' rel='stylesheet'>
 <link href='/statics/css/opa-icons.css' rel='stylesheet'>
 <link href='/statics/css/uploadify.css' rel='stylesheet'>
-
+<link href='/statics/localcss/datumDownload.css' rel='stylesheet'>
 	
 
 <!-- 院系管理员查看仪器维修详情  repairInfo  starts -->
@@ -97,6 +97,69 @@ div .modal-body label {
 </div>
 </c:if>
 <!-- 院系管理员查看仪器维修详情  repairInfo  ends -->
+
+<div id="datumDownloadTable">
+<c:if test="${page.items != null }">
+<table class="table">
+	<tbody>
+	<c:forEach items="${page.items}" var="info">
+		<c:if test="${info.filePath != null }">
+		<tr class="ziliao_row_css">
+			<td><a href="${info.filePath }" class="ziliao_a_css" target="_blank">${info.fileName }</a></td>
+			<td class="center" class="ziliao_time_css">
+				<fmt:formatDate value="${info.publishDate}" pattern="yyyy-MM-dd"/>
+			</td>                               
+		</tr>
+		</c:if>
+	</c:forEach>
+	</tbody>
+ </table>
+<div class="pagination pagination-centered">
+	<ul>
+			<c:choose>
+			<c:when test="${page.currentPageNo == 1}">
+				<li class="active"><a href="javascript:void(0)" title="首页">首页</a></li>
+			</c:when>
+			<c:otherwise>
+				<li><a href="javascript:load_infopage('1')" title="首页">首页</a></li>
+			</c:otherwise>
+		</c:choose>
+		<c:if test="${page.prevPages != null}">
+			<c:forEach items="${page.prevPages}" var="num">
+				<li><a href="javascript:load_infopage('${num}')" title="${num}">${num}</a></li>
+			</c:forEach>
+		</c:if>
+
+		<li class="active"><a href="javascript:void(0)" title="${page.currentPageNo}">${page.currentPageNo}</a>
+		</li>
+
+		<c:if test="${page.nextPages != null}">
+			<c:forEach items="${page.nextPages}" var="num">
+				<li><a href="javascript:load_infopage('${num}')" title="${num}">${num}</a></li>
+			</c:forEach>
+		</c:if>
+
+		<c:if test="${page.totalPageCount != null}">
+			<c:choose>
+				<c:when test="${page.currentPageNo == page.totalPageCount}">
+					<li class="active"><a href="javascript:void(0)" title="尾页">尾页</a></li>
+				</c:when>
+				<c:otherwise>
+					<li><a href="javascript:load_infopage('${page.totalPageCount}')" title="尾页">尾页</a></li>
+				</c:otherwise>
+			</c:choose>
+		</c:if>
+
+		<c:if test="${page.totalPageCount == null}">
+			<li class="active"><a href="javascript:void(0)" title="尾页">尾页</a></li>
+		</c:if>
+	</ul>
+</div> 
+</c:if>
+<c:if test="${page.items == null }">
+	<div class="center">暂时没有资料下载！</div>
+</c:if>    
+</div>
 
 
 <script src="/statics/js/jquery-1.7.2.min.js"></script>

@@ -107,11 +107,16 @@ $(document).ready(function(){
 				case 8: pic = "icon-star";break;
 				case 9: pic = "icon-calendar";break;
 			}
-			result = result + '<li><a href=\"'+json[i].subMenus[j].functionUrl+'\"><i class=\"'+pic+
+			if(json[i].subMenus[j].functionCode == "datumDownload"){
+				result = result + '<li><a href=\"'+json[i].subMenus[j].functionUrl+'\" target=\"_blank\"><i class=\"'+pic+
 					'\"></i><span class=\"hidden-tablet\"> '+json[i].subMenus[j].functionName+'</span></a></li>';
+			}else{
+				result = result + '<li><a href=\"'+json[i].subMenus[j].functionUrl+'\"><i class=\"'+pic+
+					'\"></i><span class=\"hidden-tablet\"> '+json[i].subMenus[j].functionName+'</span></a></li>';
+			}
 		}
 	}
-	for(var i=0;i<20-clims_count;i++){
+	for(var i=0;i<23-clims_count;i++){
 		result = result + '<br>';
 	}
 	$("#menus").append(result);

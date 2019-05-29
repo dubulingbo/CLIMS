@@ -3,9 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.clims.dao.dataDictionary.DataDictionaryMapper">
-	<select id="getDataDictionaryList" resultType="dataDictionary"
-		parameterType="dataDictionary">
-		select * from clims_dataDictionary where typeCode =
-		#{typeCode}
+	<select id="getDataDictionaryList" resultType="dataDictionary" parameterType="dataDictionary">
+		select * from clims_dataDictionary where typeCode = #{typeCode}
 	</select>
 </mapper>

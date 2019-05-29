@@ -1,11 +1,11 @@
 
 //执行一个laydate实例
-//laydate.render({
-//	elem: document.getElementById('rep_bookDate'), //指定元素
-//	type: 'datetime',
-//	format: 'yyyy-MM-dd HH:mm',
-//	min: 1
-//});
+laydate.render({
+	elem: document.getElementById('rep_bookDate'), //指定元素
+	type: 'datetime',
+	format: 'yyyy-MM-dd HH:mm',
+	min: 1
+});
 
 
 //============================ assign apply starts ============================//
@@ -176,7 +176,7 @@ function isPhoneNo(phone) {
 $('.instrumentRepairApplySave').click(function(){
 	var id = $(this).attr('id');
 	var inst = new Object();
-	inst.assignId = id;
+	inst.assId = id;
 	inst.instrumentId = $('#rep_instrumentId').val();
 	inst.instrumentName = $('#rep_instrumentName').val();
 	inst.dept = $.trim($('#rep_dept').val());
@@ -282,12 +282,12 @@ $('.instrumentRepairApplySave').click(function(){
 					str = str + '<tbody>';
 					for(var i=0;i<result.length;i++){
 						str = str + '<tr>'+
-									'<td>'+result[i].instrumentNo+'</td>'+
+									'<td>'+result[i].assignId+'</td>'+
 									'<td>'+result[i].instrumentName+'</td>'+
 									'<td>'+result[i].repairDetail+'</td>'+
 									'<td>'+result[i].creationDate+'</td>'+
 									'<td>'+result[i].bookDate+'</td>';
-						if(result[i].status == 7){
+						if(result[i].status == 8){
 							str = str + '<td><span class=\"label label-info\">'+
 									    '申请维修'+
 									    '</span></td>';
@@ -367,26 +367,27 @@ function TajaxFileUpload(){
 $('#sc_assignId').blur(function(){
 	var assignId = $.trim($('#sc_assignId').val());
 	if(assignId == null || assignId == '')return;
-	$.post('assignIdIsExist.html',{'assignId':assignId},function(data){
-		if(data == "noexist"){
-			alert('该仪器不存在，不可申请.')
-		}else if(data == "nodata"){
-			alert('没有数据传到后台！');
-		}else if(data == "failed"){
-			alert('系统错误！');
-		}else{
-			alert('该仪器存在，可以申请.');
-			$('#sc_instrumentName').val(data.instrumentName);
-			//alert(data.assignNumber);
-			if(data.assignNumber > 0){
-				$('#sc_scrapNumber').html('<option value="">-请选择-</option>')
-				for(var i=1;i<=data.assignNumber;i++){
-					$('#sc_scrapNumber').append('<option value="'+i+'"> '+i+'</option>')
+	else
+		$.post('assignIdIsExist.html',{'assignId':assignId},function(data){
+			if(data == "noexist"){
+				alert('该仪器不存在，不可申请.');
+			}else if(data == "nodata"){
+				alert('没有数据传到后台！');
+			}else if(data == "failed"){
+				alert('系统错误！');
+			}else{
+				alert('该仪器存在，可以申请.');
+				$('#sc_instrumentName').val(data.instrumentName);
+				//alert(data.assignNumber);
+				if(data.assignNumber > 0){
+					$('#sc_scrapNumber').html('<option value="">-请选择-</option>')
+					for(var i=1;i<=data.assignNumber;i++){
+						$('#sc_scrapNumber').append('<option value="'+i+'"> '+i+'</option>')
+					}
 				}
+				$('#sc_applyPerson').val(data.createdByName);
 			}
-			$('#sc_applyPerson').val(data.createdByName);
-		}
-	},'json');
+		});
 });
 function clearRepairApplyForm(){
 	
@@ -404,43 +405,40 @@ $('.instScrapApplySave').click(function(){
 	var scrapNumber = $.trim($('#sc_scrapNumber').val());
 	var scrapDetail = $.trim($('#sc_scrapDetail').val());
 	var applyPerson = $.trim($('#sc_applyPerson').val());
-	var f = true;
 	if(assignId == null || assignId == ''){
-		alert('仪器编号不能为空！');f = false;
+		alert('仪器编号不能为空！');return;
 	}
 	if(instrumentName == null || instrumentName == ''){
-		alert('仪器名称不能为空！');f = false;
+		alert('仪器名称不能为空！');return;
 	}
-	if(scrapNumber == null || scrapNumber == ''){
-		alert('申请数量不能为空！');f = false;
+	else if(scrapNumber == null || scrapNumber == ''){
+		alert('申请数量不能为空！');return;
 	}
 	if(scrapDetail == null || scrapDetail == ''){
-		alert('报废原因不能为空！');f = false;
+		alert('报废原因不能为空！');return;
 	}
 	if(applyPerson == null || applyPerson == ''){
-		alert('申请人不能为空！');f = false;
+		alert('申请人不能为空！');return;
 	}
-	
-	if(f){
-		$.ajax({
-			url:'instrumentScrapSave.html',
-			type:'post',
-			data:{assignId:assignId,scrapNumber:scrapNumber,scrapDetail:scrapDetail},
-			dataType:'html',
-			timeout:1000,
-			success:function(result){
-				if(result == "success"){
-					clearRepairApplyForm();
-					alert('申请成功！');
-				}else{
-					alert('操作失败，系统错误！');
-				}
-			},
-			error:function(){
-				alert('error,请求失败！');
+	//提交到后台
+	$.ajax({
+		url:'instrumentScrapSave.html',
+		type:'post',
+		data:{assignId:assignId,scrapNumber:scrapNumber,scrapDetail:scrapDetail},
+		dataType:'html',
+		timeout:1000,
+		success:function(result){
+			if(result == "success"){
+				clearRepairApplyForm();
+				alert('申请成功！');
+			}else{
+				alert('操作失败，系统错误！');
 			}
-		});
-	}
+		},
+		error:function(){
+			alert('error,请求失败！');
+		}
+	});
 });
 	
 

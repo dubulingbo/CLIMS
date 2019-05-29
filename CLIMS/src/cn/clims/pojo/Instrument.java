@@ -1,5 +1,6 @@
 package cn.clims.pojo;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,7 +52,8 @@ public class Instrument extends Base {
 	private Date checkDate; //审核时间
 	
 	private String locName;  //所在地名称（实验室/房间号）
-    
+	
+	
 	public Date getExpireDate() {
 		if(this.purchaseDate == null){
 			return new Date();
@@ -105,6 +107,8 @@ public class Instrument extends Base {
 		return price;
 	}
 	public void setPrice(Double price) {
+		
+		
 		this.price = price;
 	}
 	public String getManufacturer() {
@@ -240,5 +244,26 @@ public class Instrument extends Base {
 	public void setLocName(String locName) {
 		this.locName = locName;
 	}
+	
+	
+	public static void main(String[] args) {
+		 
+		Double double1 = 0.00;
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");//格式化设置
+		System.out.println(decimalFormat.format(double1));
+		System.out.println(double1);
+ 
+	}
+
+
+	public String getPrice1() {
+		if(this.getPrice() != null)
+			return new DecimalFormat("#,##0.00").format(this.getPrice());
+		return "0.00";
+	}
+
+
+
+
 	
 }

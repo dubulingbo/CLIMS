@@ -7,19 +7,29 @@ package cn.clims.tools;
  */
 public class Constants {
 	public final static String SYS_MESSAGE = "message";
-	public final static int PAGE_SIZE = 4;
+	public final static int PAGE_SIZE = 5;
 	public final static Integer MAXSIZE_REPAIR_IMG = 5000000;  //维修图片单张最大5M
 	public final static Integer MAXNUMBER_REPAIR_IMG = 2;  //维修图片最多能上传 2 张
 	/**
 	 * 1 - 上传失败
-	 * 2 - 上传文件格式不正确
-	 * 3 - 上传文件过大
-	 * 4 - 上传数量过多
 	 */
 	public final static String FILEUPLOAD_ERROR_1 = "1";
+	/**
+	 * 2 - 上传文件格式不正确
+	 */
 	public final static String FILEUPLOAD_ERROR_2 = "2";
+	/**
+	 * 3 - 上传文件过大
+	 */
 	public final static String FILEUPLOAD_ERROR_3 = "3";
+	/**
+	 * 4 - 上传数量过多
+	 */
 	public final static String FILEUPLOAD_ERROR_4 = "4";
+	/**
+	 * 5 - 没有文件上传
+	 */
+	public final static String FILEUPLOAD_ERROR_5 = "5";
 	//当前登录用户session key
 	public static final String CURRENT_USER = "currentUser";
 	//当前登录用户的基础业务数据(菜单列表，公告列表，资讯列表，即用户主页的数据)
