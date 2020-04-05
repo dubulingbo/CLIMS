@@ -1,0 +1,10 @@
+.ziliao_row_css{
+height:60px;
+ }
+ .ziliao_a_css,.ziliao_time_css{
+font-size:16px;
+color:black;
+line-height: 30px;
+ }
+.ziliao_a_css{font-weight:lighter;}
+.ziliao_time_css{}

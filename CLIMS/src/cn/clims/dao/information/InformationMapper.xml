@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.clims.dao.information.InformationMapper">
+	<select id="getList" resultType="information" parameterType="information">
+		select * from clims_information
+		<trim prefixOverrides="and | or" prefix="where">
+			<if test="state != null">and state = #{state}</if>
+		</trim>
+		and filePath != ''
+		order by hot DESC,publishDate DESC
+		<if test="startPageNo != null and pageSize != null">
+			limit #{startPageNo},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="count" resultType="int" parameterType="information">
+		select count(1) from clims_information
+		<trim prefixOverrides="and | or" prefix="where">
+			<if test="state != null">and state = #{state}</if>
+		</trim>
+		and filePath != ''
+	</select>
+	
+	<select id="getInformationList" resultType="information" parameterType="information">
+		select *,
+			   (select valueName 
+			    from clims_dataDictionary 
+			    where typeCode='INFO_TYPE' and valueId = typeId) as typeName
+		from clims_information
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="state != null">
+			 and state = #{state}
+			</if>
+			<if test="fileName != null">
+			 and fileName like #{fileName}
+			</if>
+			<if test="title != null">
+			 and title like #{title}
+			</if>
+		</trim>
+		order by publishDate DESC,uploadDate DESC
+		<if test="startPageNo != null and pageSize != null">
+			limit #{startPageNo},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getInformationCount" resultType="int">
+		select count(1) from clims_information
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="state != null">
+			 and state = #{state}
+			</if>
+			<if test="fileName != null">
+			 and fileName like #{fileName}
+			</if>
+			<if test="title != null">
+			 and title like #{title}
+			</if>
+		</trim>
+	</select>
+	
+	<insert id="addInformation" parameterType="information">
+		insert into 
+		clims_information(title,content,typeId,fileName,filePath,fileSize,uploadDate)
+		values(#{title},#{content},#{typeId},#{fileName},#{filePath},#{fileSize},#{uploadDate})
+	</insert>
+	
+	<update id="modifyInformation" parameterType="information">
+		update clims_information
+		<set>
+			<if test="title != null and title != ''">title = #{title},</if>
+			<if test="content != null and content != ''">content = #{content},</if>
+			<if test="state != null">state = #{state},</if>
+			<if test="publisher != null and publisher != ''">publisher = #{publisher},</if>
+			<if test="publishDate != null">publishDate = #{publishDate},</if>
+			<if test="typeId != null">typeId = #{typeId},</if>
+			<if test="fileName != null and fileName != ''">fileName = #{fileName},</if>
+			<if test="filePath != null and filePath != ''">filePath = #{filePath},</if>
+			<if test="fileSize != null">fileSize = #{fileSize},</if>
+			<if test="uploadDate != null">uploadDate = #{uploadDate},</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="modifyInformationFileInfo" parameterType="information">
+		update clims_information 
+		<set>
+			<if test="fileName != null"> fileName = #{fileName},</if>
+			<if test="filePath != null"> filePath = #{filePath},</if>
+			<if test="fileSize != null"> fileSize = #{fileSize},</if>
+		</set>
+		where filePath = #{typeName}
+	</update>
+	
+	<select id="getInformation" parameterType="information" resultType="information">
+		select *,
+		       (select valueName 
+		        from clims_dataDictionary 
+		        where typeCode='INFO_TYPE' and valueId = typeId) as typeName
+		 from clims_information where id = #{id}
+	</select>
+	
+	<delete id="deleteInformation" parameterType="information">
+		delete from clims_information where id = #{id}
+	</delete>
+	
+</mapper>

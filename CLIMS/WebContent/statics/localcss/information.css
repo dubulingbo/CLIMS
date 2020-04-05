@@ -1,0 +1,16 @@
+.add_information_modal-body .topul,.add_information_modal-body .downul{list-style: none;}
+.add_information_modal-body .topul li{width:450px;float: left;}
+.add_information_modal-body .topul li input{width:450px;}
+.view_information_modal-body .viewinformationul{list-style: none;}
+.view_information_modal-body .viewinformationul li{width:450px;padding:5px;}
+
+
+.InfoDivCss {
+	top: 30%;
+	left: 50%;
+	-webkit-transform: translate(-15%, 0);
+	-moz-transform: translate(-15%, 0);
+	-ms-transform: translate(-15%, 0);
+	-o-transform: translate(-15%, 0);
+	transform: translate(-15%, 0);
+}
